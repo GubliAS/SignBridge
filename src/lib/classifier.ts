@@ -37,8 +37,8 @@ const RULES: [string, Rule][] = [
     curl(lm[20], lm[18])
   ],
 
-  // bad — fist with thumb clearly pointing DOWN (checked before 'no' to avoid
-  // partial overlap: bad requires thumb tip well below the thumb base lm[2])
+  // bad — fist with thumb clearly pointing DOWN
+  // thumb tip must be well below thumb base (lm[2]) — prevents overlap with stop
   ['bad', (lm) =>
     lm[4].y > lm[3].y   &&
     lm[4].y > lm[2].y   && // thumb tip clearly below thumb base — key differentiator
@@ -46,14 +46,6 @@ const RULES: [string, Rule][] = [
     curl(lm[12], lm[10]) &&
     curl(lm[16], lm[14]) &&
     curl(lm[20], lm[18])
-  ],
-
-  // no — thumb down, four fingers curled (less strict than 'bad')
-  ['no', (lm) =>
-    lm[4].y > lm[3].y   &&
-    curl(lm[8],  lm[6])  &&
-    curl(lm[12], lm[10]) &&
-    curl(lm[16], lm[14])
   ],
 
   // stop — all fingers curled AND thumb tucked inward (lm[4].x > lm[3].x)
@@ -97,7 +89,18 @@ const RULES: [string, Rule][] = [
     ext(lm[20],  lm[18])
   ],
 
+  // love — ILY shape: index + pinky extended, middle + ring curled
+  // Checked before 'school' so that a love sign with thumb raised
+  // does not accidentally fire the school (L-shape) rule.
+  ['love', (lm) =>
+    ext(lm[8],   lm[6])  &&
+    curl(lm[12], lm[10]) &&
+    curl(lm[16], lm[14]) &&
+    ext(lm[20],  lm[18])
+  ],
+
   // school — L-shape: thumb up + index extended, middle curled (key differentiator)
+  // Pinky is curled when making this sign, so 'love' above never fires first.
   ['school', (lm) =>
     lm[4].y < lm[3].y   &&
     ext(lm[8],   lm[6])  &&

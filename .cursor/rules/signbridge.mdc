@@ -69,18 +69,18 @@ Min touch target: 48px. Mobile-first. No inline styles.
 
 ## Vocabulary (10 signs)
 
-| Label  | Twi    | GIF path            |
-|--------|--------|---------------------|
-| hello  | Mahɔ   | /signs/hello.gif    |
-| yes    | Aane   | /signs/yes.gif      |
-| no     | Daabi  | /signs/no.gif       |
-| help   | Boa me | /signs/help.gif     |
-| stop   | Gyae   | /signs/stop.gif     |
-| good   | Eye    | /signs/good.gif     |
-| bad    | Bɔne   | /signs/bad.gif      |
-| water  | Nsuo   | /signs/water.gif    |
-| name   | Din    | /signs/name.gif     |
-| school | Sukuu  | /signs/school.gif   |
+| Label  | Twi    | Image path                   |
+|--------|--------|------------------------------|
+| hello  | Mahɔ   | /signs/hello-handsign.webp   |
+| yes    | Aane   | /signs/yes-handsign.webp     |
+| love   | Dɔ     | /signs/love-handsign.webp    |
+| help   | Boa me | /signs/help-handsign.webp    |
+| stop   | Gyae   | /signs/stop-handsign.webp    |
+| good   | Eye    | /signs/good-handsign.webp    |
+| bad    | Bɔne   | /signs/bad-handsign.webp     |
+| water  | Nsuo   | /signs/water-handsign.webp   |
+| name   | Din    | /signs/name-handsign.webp    |
+| school | Sukuu  | /signs/school-handsign.webp  |
 
 ## GhanaNLP API
 

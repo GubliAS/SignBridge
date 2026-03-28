@@ -6,10 +6,10 @@ import {
   getCachedAudio,
   getCachedDisplayText,
   playAudio,
-  preloadTwiAudio,
+  preloadAudio,
   speakEnglish,
 } from '@/lib/audio';
-import { SIGN_MAP, SIGNS, type Lang } from '@/lib/signs';
+import { LANGUAGES, SIGN_MAP, SIGNS, type Lang } from '@/lib/signs';
 import type { TranslateResponseBody } from '@/app/api/translate/route';
 
 // ssr:false is belt-and-suspenders alongside 'use client' + lazy MediaPipe import
@@ -29,22 +29,26 @@ interface SignResult {
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-function LangToggle({ value, onChange }: { value: Lang; onChange: (l: Lang) => void }) {
+function LangDropdown({ value, onChange }: { value: Lang; onChange: (l: Lang) => void }) {
   return (
-    <div className="flex bg-[#f5f5f5] rounded-pill p-[3px]">
-      {(['en', 'tw'] as const).map((l) => (
-        <button
-          key={l}
-          type="button"
-          aria-pressed={value === l}
-          onClick={() => onChange(l)}
-          className={`px-[14px] py-[6px] rounded-pill text-[11px] font-[700] transition-colors ${
-            value === l ? 'bg-ink text-white' : 'text-[#999] hover:text-ink'
-          }`}
-        >
-          {l === 'en' ? 'English' : 'Twi'}
-        </button>
-      ))}
+    <div className="relative inline-flex items-center">
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value as Lang)}
+        aria-label="Output language"
+        className="appearance-none bg-[#f5f5f5] rounded-pill pl-4 pr-8 py-[7px] text-[11px] font-[700] text-ink border-none outline-none cursor-pointer hover:bg-[#ececec] transition-colors"
+      >
+        {(Object.entries(LANGUAGES) as [Lang, { label: string }][]).map(([code, { label }]) => (
+          <option key={code} value={code}>{label}</option>
+        ))}
+      </select>
+      {/* chevron */}
+      <svg
+        className="pointer-events-none absolute right-[10px] top-1/2 -translate-y-1/2"
+        width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"
+      >
+        <path d="M1 1L5 5L9 1" stroke="#999" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
     </div>
   );
 }
@@ -63,7 +67,8 @@ export default function TranslatePage() {
   const [lang,         setLang]         = useState<Lang>('en');
   const [result,       setResult]       = useState<SignResult | null>(null);
   const [isLoading,    setIsLoading]    = useState(false);
-  const [isPreloading, setIsPreloading] = useState(true);
+  const [isPreloading, setIsPreloading] = useState(false);
+  const [preloadLabel, setPreloadLabel] = useState('');
   const [toast,        setToast]        = useState<string | null>(null);
   const [recentSigns,  setRecentSigns]  = useState<string[]>([]);
   const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -74,19 +79,25 @@ export default function TranslatePage() {
     toastTimer.current = setTimeout(() => setToast(null), 4000);
   };
 
-  useEffect(() => {
-    preloadTwiAudio().finally(() => setIsPreloading(false));
-    return () => clearTimeout(toastTimer.current);
+  // Preload audio for a language in the background
+  const triggerPreload = useCallback((target: Lang) => {
+    if (target === 'en') return;
+    const label = LANGUAGES[target].label;
+    setIsPreloading(true);
+    setPreloadLabel(label);
+    preloadAudio(target as Exclude<Lang, 'en'>).finally(() => setIsPreloading(false));
   }, []);
+
+  // Preload Twi on mount so the first sign detection is instant
+  useEffect(() => {
+    triggerPreload('tw');
+    return () => clearTimeout(toastTimer.current);
+  }, [triggerPreload]);
 
   const handleSign = useCallback(async (label: string) => {
     const sign = SIGN_MAP[label];
 
-    // Track recent signs (keep last 8, most recent first, no duplicates at front)
-    setRecentSigns((prev) => {
-      const next = [label, ...prev.filter((s) => s !== label)].slice(0, 8);
-      return next;
-    });
+    setRecentSigns((prev) => [label, ...prev.filter((s) => s !== label)].slice(0, 8));
 
     if (lang === 'en') {
       setResult({ english: label, display: label, secondary: sign?.twi ?? '', lang: 'en' });
@@ -94,11 +105,11 @@ export default function TranslatePage() {
       return;
     }
 
-    // Twi — zero-latency cache path
-    const cachedAudio = getCachedAudio(label);
-    const cachedText  = getCachedDisplayText(label);
+    // Non-English — zero-latency cache path
+    const cachedAudio = getCachedAudio(label, lang);
+    const cachedText  = getCachedDisplayText(label, lang);
     if (cachedAudio && cachedText) {
-      setResult({ english: label, display: cachedText, secondary: label, lang: 'tw' });
+      setResult({ english: label, display: cachedText, secondary: label, lang });
       playAudio(cachedAudio);
       return;
     }
@@ -109,11 +120,11 @@ export default function TranslatePage() {
       const res = await fetch('/api/translate', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ label, lang: 'tw' }),
+        body:    JSON.stringify({ label, lang }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = (await res.json()) as TranslateResponseBody;
-      setResult({ english: label, display: data.displayText, secondary: label, lang: 'tw' });
+      setResult({ english: label, display: data.displayText, secondary: label, lang });
       if (data.audio) playAudio(data.audio);
     } catch {
       showToast('Translation unavailable. Showing English only.');
@@ -127,7 +138,10 @@ export default function TranslatePage() {
   const handleLangChange = (next: Lang) => {
     setLang(next);
     setResult(null);
+    triggerPreload(next);
   };
+
+  const currentLangLabel = LANGUAGES[lang].label;
 
   return (
     <main className="flex flex-col bg-white min-h-[calc(100dvh-60px)]">
@@ -138,14 +152,17 @@ export default function TranslatePage() {
           <div className="text-[9px] font-[800] text-green uppercase tracking-[0.12em] mb-[3px]">Mode</div>
           <h1 className="text-[20px] font-[900] text-ink tracking-[-0.7px]">Sign → Text</h1>
         </div>
-        <LangToggle value={lang} onChange={handleLangChange} />
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-[#bbb] font-[600]">Output</span>
+          <LangDropdown value={lang} onChange={handleLangChange} />
+        </div>
       </header>
 
       {/* Preload banner */}
       {isPreloading && (
         <div role="status" aria-live="polite" className="flex items-center justify-center gap-2 bg-green-light px-4 py-2 text-[11px] text-green-dark font-[500]">
           <span aria-hidden="true" className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-green border-t-transparent" />
-          Loading Twi audio…
+          Loading {preloadLabel} audio…
         </div>
       )}
 
@@ -194,7 +211,7 @@ export default function TranslatePage() {
                 {result.secondary && (
                   <div>
                     <div className="text-[9px] text-[#bbb] uppercase tracking-[0.08em] font-[700] mb-[2px]">
-                      {result.lang === 'tw' ? 'English' : 'Twi'}
+                      {result.lang === 'en' ? 'Twi' : 'English'}
                     </div>
                     <p className="text-[18px] text-[#888] font-[600] tracking-[-0.3px]">{result.secondary}</p>
                   </div>
@@ -213,9 +230,16 @@ export default function TranslatePage() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-2">
-                <span className="w-[7px] h-[7px] rounded-full border-[1.5px] border-[#ddd] flex-shrink-0" />
-                <p className="text-[14px] text-[#ccc] italic">Make a sign…</p>
+              <div className="flex flex-col items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <span className="w-[7px] h-[7px] rounded-full border-[1.5px] border-[#ddd] flex-shrink-0" />
+                  <p className="text-[14px] text-[#ccc] italic">Make a sign…</p>
+                </div>
+                {lang !== 'en' && (
+                  <div className="text-[10px] text-[#bbb] bg-[#fafafa] border border-[#f0f0f0] rounded-pill px-3 py-[5px]">
+                    Output: <span className="font-[700] text-[#999]">{currentLangLabel}</span>
+                  </div>
+                )}
               </div>
             )}
           </section>
@@ -235,8 +259,9 @@ export default function TranslatePage() {
             ) : (
               <div className="flex gap-[6px] overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {recentSigns.map((label, i) => {
-                  const s = SIGN_MAP[label];
+                  const s      = SIGN_MAP[label];
                   const active = i === 0;
+                  const cached = lang !== 'en' ? getCachedDisplayText(label, lang) : undefined;
                   return (
                     <div
                       key={label}
@@ -248,7 +273,10 @@ export default function TranslatePage() {
                         gif
                       </div>
                       <div className={`text-[9px] font-[700] ${active ? 'text-green-dark' : 'text-[#555]'}`}>{label}</div>
-                      {s && <div className={`text-[7px] ${active ? 'text-green' : 'text-[#bbb]'}`}>{s.twi}</div>}
+                      {/* Show translated word if cached, else fall back to Twi */}
+                      <div className={`text-[7px] ${active ? 'text-green' : 'text-[#bbb]'}`}>
+                        {cached ?? s?.twi}
+                      </div>
                     </div>
                   );
                 })}

@@ -2,57 +2,53 @@ import { SIGNS } from '@/lib/signs';
 import type { Lang } from '@/lib/signs';
 import type { TranslateResponseBody } from '@/app/api/translate/route';
 
-/** audio cache:       label → base64 WAV */
-const twiAudioCache = new Map<string, string>();
-/** display text cache: label → Twi text returned by the API */
-const twiDisplayCache = new Map<string, string>();
+// Cache keys are "${lang}:${label}" so all four languages share one Map.
+// e.g. "tw:hello", "ee:hello", "gaa:hello"
+const audioCache   = new Map<string, string>(); // key → base64 WAV
+const displayCache = new Map<string, string>(); // key → translated display text
 
 /** Track any currently playing Audio element so we can cancel it */
 let currentAudio: HTMLAudioElement | null = null;
 
-/**
- * Pre-fetches TTS audio + Twi display text for all 10 signs from /api/translate.
- * Stores results in twiAudioCache and twiDisplayCache.
- * Call once on page mount. Silently skips any sign that fails.
- */
-export async function preloadTwiAudio(): Promise<void> {
-  let loaded = 0;
+function cacheKey(lang: Lang, label: string): string {
+  return `${lang}:${label}`;
+}
 
+/**
+ * Pre-fetches TTS audio + translated display text for all 10 signs
+ * for the given language. Silently skips any sign that fails.
+ * Safe to call multiple times — already-cached entries are skipped.
+ */
+export async function preloadAudio(lang: Exclude<Lang, 'en'>): Promise<void> {
   await Promise.all(
     SIGNS.map(async (sign) => {
-      if (twiAudioCache.has(sign.label)) {
-        loaded++;
-        console.log(`Preloading audio: ${loaded}/${SIGNS.length}`);
-        return;
-      }
+      const key = cacheKey(lang, sign.label);
+      if (audioCache.has(key)) return; // already cached
       try {
         const res = await fetch('/api/translate', {
-          method: 'POST',
+          method:  'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ label: sign.label, lang: 'tw' }),
+          body:    JSON.stringify({ label: sign.label, lang }),
         });
         if (!res.ok) return;
         const data = (await res.json()) as TranslateResponseBody;
-        if (data.audio)       twiAudioCache.set(sign.label, data.audio);
-        if (data.displayText) twiDisplayCache.set(sign.label, data.displayText);
+        if (data.audio)       audioCache.set(key,   data.audio);
+        if (data.displayText) displayCache.set(key, data.displayText);
       } catch {
         // Network failure — skip silently
-      } finally {
-        loaded++;
-        console.log(`Preloading audio: ${loaded}/${SIGNS.length}`);
       }
     }),
   );
 }
 
-/** Returns cached base64 audio for a label, or undefined if not pre-loaded. */
-export function getCachedAudio(label: string): string | undefined {
-  return twiAudioCache.get(label);
+/** Returns cached base64 audio for a label + language, or undefined if not pre-loaded. */
+export function getCachedAudio(label: string, lang: Lang): string | undefined {
+  return audioCache.get(cacheKey(lang, label));
 }
 
-/** Returns cached Twi display text for a label, or undefined if not pre-loaded. */
-export function getCachedDisplayText(label: string): string | undefined {
-  return twiDisplayCache.get(label);
+/** Returns cached translated display text for a label + language, or undefined. */
+export function getCachedDisplayText(label: string, lang: Lang): string | undefined {
+  return displayCache.get(cacheKey(lang, label));
 }
 
 /**
@@ -86,7 +82,8 @@ export function speakEnglish(text: string): void {
 
 /**
  * Handles audio output for a detected sign.
- * Returns void (fire-and-forget) — safe to call from event handlers.
+ * Checks the cache first; falls back to a live fetch on a cache miss.
+ * Fire-and-forget — safe to call from event handlers.
  */
 export function handleSignAudio(label: string, lang: Lang): void {
   if (lang === 'en') {
@@ -94,23 +91,24 @@ export function handleSignAudio(label: string, lang: Lang): void {
     return;
   }
 
-  const cached = getCachedAudio(label);
+  const cached = getCachedAudio(label, lang);
   if (cached) {
     playAudio(cached);
     return;
   }
 
-  // Cache miss — fetch live then play (rarely happens if preload completed)
+  // Cache miss — fetch live, store, then play
   void fetch('/api/translate', {
-    method: 'POST',
+    method:  'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ label, lang: 'tw' }),
+    body:    JSON.stringify({ label, lang }),
   })
     .then(async (res) => {
       if (!res.ok) return;
       const data = (await res.json()) as TranslateResponseBody;
-      if (data.audio)       { twiAudioCache.set(label, data.audio); playAudio(data.audio); }
-      if (data.displayText)   twiDisplayCache.set(label, data.displayText);
+      const key  = cacheKey(lang, label);
+      if (data.audio)       { audioCache.set(key, data.audio);         playAudio(data.audio); }
+      if (data.displayText)   displayCache.set(key, data.displayText);
     })
     .catch(() => { /* silent fallback */ });
 }
