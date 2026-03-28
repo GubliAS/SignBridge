@@ -62,6 +62,7 @@ export default function SpeakPage() {
 
   return (
     <main className="min-h-dvh bg-white">
+      <div className='section-container'>
 
       {/* -- Header -- */}
       <header className="bg-white border-b border-[#f0f0f0] px-7 py-[22px]">
@@ -160,6 +161,8 @@ export default function SpeakPage() {
           </div>
         )}
       </section>
+      </div>
+
 
     </main>
   );
