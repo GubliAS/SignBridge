@@ -175,9 +175,10 @@ export default function LearnPage() {
   return (
     <>
       <main className="min-h-dvh bg-white pb-16">
+        <div className='section-container'>
 
         {/* Header */}
-        <div className="bg-white border-b border-[#f0f0f0] px-7 pt-5">
+        <div className="bg-white border-b border-[#f0f0f0] pt-5">
           <div className="flex items-end justify-between mb-4">
             <h1 className="text-[24px] font-[900] text-ink tracking-[-0.8px]">Learn GSL</h1>
             <span className="text-[10px] text-[#bbb] font-[600]">{SIGNS.length} signs</span>
@@ -204,7 +205,7 @@ export default function LearnPage() {
         </div>
 
         {/* Blurb */}
-        <div className="bg-[#f9f9f9] border-b border-[#f0f0f0] px-7 py-3 text-[11px] text-[#999] leading-[1.6]">
+        <div className="bg-[#f9f9f9] border-b border-[#f0f0f0] py-3 text-[11px] text-[#999] leading-[1.6]">
           {SIGNS.length} core GSL signs. Tap &quot;Try it&quot; to practise live with your camera.
         </div>
 
@@ -214,6 +215,8 @@ export default function LearnPage() {
             <LessonCard key={sign.label} sign={sign} onTryIt={handleTryIt} />
           ))}
         </div>
+        </div>
+
 
       </main>
 

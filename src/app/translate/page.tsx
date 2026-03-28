@@ -201,7 +201,7 @@ export default function TranslatePage() {
         )}
 
         {/* ── Body — two-column on desktop, stacked on mobile ── */}
-        <div className="flex flex-col md:grid md:grid-cols-[1fr_440px] flex-1 gap-10">
+        <div className="flex flex-col md:grid md:grid-cols-[1fr_440px] h-auto justify-center items-center flex-1 gap-10">
           {/* Camera column */}
           <div className="bg-transparent flex flex-col">
             <div className="relative flex-1 flex items-center justify-center min-h-[220px] md:min-h-0">
@@ -239,18 +239,18 @@ export default function TranslatePage() {
                   key={`${result.english}-${result.lang}`}
                   className="flex flex-col items-center gap-[10px] animate-sign-fade-in"
                 >
-                  <div className="text-[9px] font-bold text-green uppercase tracking-[0.1em]">
+                  <div className="text-xs font-bold text-green uppercase tracking-[0.1em]">
                     Sign detected
                   </div>
-                  <p className="text-[clamp(48px,8vw,72px)] font-[900] text-ink tracking-[-3px] leading-none">
+                  <p className="text-[clamp(48px,8vw,72px)] font-bold text-ink tracking-[-3px] leading-none">
                     {result.display}
                   </p>
                   {result.secondary && (
                     <div>
-                      <div className="text-[9px] text-[#bbb] uppercase tracking-[0.08em] font-[700] mb-[2px]">
+                      <div className="text-xs text-[#bbb] uppercase tracking-[0.08em] font-[700] mb-[2px]">
                         {result.lang === "tw" ? "English" : "Twi"}
                       </div>
-                      <p className="text-[18px] text-[#888] font-[600] tracking-[-0.3px]">
+                      <p className="text-[18px] text-[#888] font-semibold tracking-[-0.3px]">
                         {result.secondary}
                       </p>
                     </div>
@@ -293,7 +293,7 @@ export default function TranslatePage() {
 
             {/* Sign strip */}
             <div className="px-4 py-[14px]">
-              <div className="text-[8px] font-[800] text-[#bbb] uppercase tracking-[0.08em] mb-2">
+              <div className="text-xs font-semibold text-[#bbb] uppercase tracking-[0.08em] mb-2">
                 Recent signs
               </div>
               {recentSigns.length === 0 ? (
@@ -303,10 +303,10 @@ export default function TranslatePage() {
                       key={s.label}
                       className="rounded-[10px] border border-[#f0f0f0] p-2 text-center min-w-[52px] bg-[#fafafa]"
                     >
-                      <div className="w-[30px] h-[30px] bg-[#e8e8e8] rounded-[6px] mx-auto mb-1 flex items-center justify-center text-[8px] text-[#ccc]">
+                      <div className="w-[35px] h-[35px] bg-[#e8e8e8] rounded-[6px] mx-auto mb-1 flex items-center justify-center text-[8px] text-[#ccc]">
                         gif
                       </div>
-                      <div className="text-[9px] font-[700] text-[#555]">
+                      <div className="text-[11px] font-[700] text-[#555]">
                         {s.label}
                       </div>
                     </div>
@@ -320,25 +320,25 @@ export default function TranslatePage() {
                     return (
                       <div
                         key={label}
-                        className={`flex-shrink-0 rounded-[10px] border p-2 text-center min-w-[52px] transition-colors ${
+                        className={`flex-shrink-0 rounded-[10px] border p-3 text-center min-w-[52px] transition-colors ${
                           active
                             ? "border-green bg-green-light"
                             : "border-[#f0f0f0] bg-[#fafafa]"
                         }`}
                       >
                         <div
-                          className={`w-[30px] h-[30px] rounded-[6px] mx-auto mb-1 flex items-center justify-center text-[8px] ${active ? "bg-[#c8edd8] text-green-dark" : "bg-[#e8e8e8] text-[#ccc]"}`}
+                          className={`w-[45px] h-[45px] rounded-[6px] mx-auto mb-1 flex items-center justify-center text-[8px] ${active ? "bg-[#c8edd8] text-green-dark" : "bg-[#e8e8e8] text-[#ccc]"}`}
                         >
                           gif
                         </div>
                         <div
-                          className={`text-[9px] font-[700] ${active ? "text-green-dark" : "text-[#555]"}`}
+                          className={`capitalize text-xs font-[700] ${active ? "text-green-dark" : "text-[#555]"}`}
                         >
                           {label}
                         </div>
                         {s && (
                           <div
-                            className={`text-[7px] ${active ? "text-green" : "text-[#bbb]"}`}
+                            className={`text-[10px] ${active ? "text-green" : "text-[#bbb]"}`}
                           >
                             {s.twi}
                           </div>
