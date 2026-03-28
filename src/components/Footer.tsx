@@ -1,10 +1,16 @@
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from "next/image";
+import Link from "next/link";
 
 function LogoMark() {
   return (
     <div className="flex items-center justify-center w-5 h-5 rounded-full bg-green flex-shrink-0">
-      <svg width="9" height="9" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+      <svg
+        width="9"
+        height="9"
+        viewBox="0 0 11 11"
+        fill="none"
+        aria-hidden="true"
+      >
         <path d="M5.5 1L9 4.5L5.5 8L2 4.5L5.5 1Z" fill="white" />
       </svg>
     </div>
@@ -36,9 +42,7 @@ export function Footer() {
             Real-time Ghanaian Sign Language translation — live, private, and
             free.
           </p>
-          <p className="text-xs text-[#2a2a2a]">
-            Built with GhanaNLP Khaya AI
-          </p>
+          <p className="text-xs text-[#2a2a2a]">Built with GhanaNLP Khaya AI</p>
         </div>
 
         {/* Col 2 — App modes */}

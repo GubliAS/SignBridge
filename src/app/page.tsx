@@ -435,7 +435,7 @@ const MODES = [
     title: "Sign → Text",
     route: "/translate",
     desc: "Point your camera at a GSL signer and get instant English + Twi translation.",
-    cta: "Start translating →",
+    cta: "Start translating",
     feat: true,
   },
   {
@@ -444,7 +444,7 @@ const MODES = [
     title: "Learn GSL",
     route: "/learn",
     desc: "10 core GSL signs with GIF demonstrations and live camera practice.",
-    cta: "Browse lessons →",
+    cta: "Browse lessons",
     feat: false,
   },
   {
@@ -453,7 +453,7 @@ const MODES = [
     title: "Text → Sign",
     route: "/speak",
     desc: "Type a word or phrase and see the matching GSL GIFs instantly.",
-    cta: "Try it →",
+    cta: "Try it",
     feat: false,
   },
 ] as const;
@@ -509,6 +509,7 @@ function ModeCards() {
                 }`}
               >
                 {cta}
+                <ArrowRight size={14} />
               </Link>
             </div>
           ))}
