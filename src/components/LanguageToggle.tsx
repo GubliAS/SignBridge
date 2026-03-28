@@ -10,6 +10,7 @@ export function LanguageToggle({ value, onChange }: LanguageToggleProps) {
     <div className="flex items-center gap-1 rounded-full bg-gray-100 p-1">
       <button
         type="button"
+        aria-pressed={value === 'en'}
         onClick={() => onChange('en')}
         className={
           value === 'en'
@@ -21,6 +22,7 @@ export function LanguageToggle({ value, onChange }: LanguageToggleProps) {
       </button>
       <button
         type="button"
+        aria-pressed={value === 'tw'}
         onClick={() => onChange('tw')}
         className={
           value === 'tw'
