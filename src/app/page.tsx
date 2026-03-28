@@ -259,10 +259,10 @@ function Stats() {
           <div className="text-[36px] font-bold text-ink tracking-[-2px] leading-none mb-[3px]">
             {n}
           </div>
-          <div className="text-[11px] text-[#888] font-[500] leading-[1.4]">
+          <div className="text-[12px] text-[#888] font-[500] leading-[1.4]">
             {label}
           </div>
-          <div className="text-[9px] text-[#bbb] mt-[3px]">{src}</div>
+          <div className="text-[11px] text-[#bbb] mt-[3px]">{src}</div>
         </div>
       ))}
     </div>
