@@ -1,0 +1,96 @@
+---
+description: SignBridge Ghana — project rules for AI code generation
+globs: ["**/*.ts", "**/*.tsx"]
+---
+
+# SignBridge Ghana — Cursor Rules
+
+## Stack
+- Next.js 16 (App Router, src/ directory)
+- TypeScript strict mode — **no `any` anywhere**
+- Tailwind CSS v4 (config-file-free; tokens live in `globals.css` `@theme` block)
+- @mediapipe/hands for landmark detection (browser-only)
+- GhanaNLP / Khaya AI for translation + TTS (server-only)
+
+## Critical: MediaPipe must be lazy-imported inside useEffect
+
+NEVER:
+```ts
+import { Hands } from '@mediapipe/hands'
+```
+
+ALWAYS:
+```ts
+useEffect(() => {
+  import('@mediapipe/hands').then(({ Hands }) => { ... })
+}, [])
+```
+
+Any file that uses MediaPipe or webcam APIs must have `'use client'` at the top.
+
+## Critical: API key is server-side only
+
+`GHANANLP_API_KEY` lives in `.env.local` and is ONLY read inside:
+`src/app/api/translate/route.ts`
+
+Never reference `process.env.GHANANLP_API_KEY` in any client component.
+
+## Language paths
+
+- English output → `window.speechSynthesis.speak(label)` — no API call
+- Twi output → `POST /api/translate { label, lang: 'tw' }` → GhanaNLP translate + TTS
+
+## Camera
+
+Both `<video>` and `<canvas>` overlay use `className='scale-x-[-1]'` for mirror reflection.
+
+## Sign classification
+
+`classifySign(landmarks)` in `src/lib/classifier.ts` is pure TypeScript — it is YOUR code, not MediaPipe's.
+
+- Extended finger: `tip.y < pip.y`
+- Curled finger:   `tip.y > pip.y`
+
+Key landmark indices: 4=thumb tip, 3=thumb IP, 8=index tip, 6=index PIP,
+12=middle tip, 10=middle PIP, 16=ring tip, 14=ring PIP, 20=pinky tip, 18=pinky PIP.
+
+## Exports
+
+- Named exports for all components and utilities
+- Default exports only for: `page.tsx`, `layout.tsx`, `route.ts`
+
+## Design tokens (Tailwind v4)
+
+Primary:   `bg-brand-500` (#1D9E75)
+Hover:     `hover:bg-brand-600` (#0F6E56)
+Camera view: `relative w-full aspect-video rounded-2xl overflow-hidden bg-black`
+Sign label: `text-6xl font-bold text-center`
+Min touch target: 48px. Mobile-first. No inline styles.
+
+## Vocabulary (10 signs)
+
+| Label  | Twi    | GIF path            |
+|--------|--------|---------------------|
+| hello  | Mahɔ   | /signs/hello.gif    |
+| yes    | Aane   | /signs/yes.gif      |
+| no     | Daabi  | /signs/no.gif       |
+| help   | Boa me | /signs/help.gif     |
+| stop   | Gyae   | /signs/stop.gif     |
+| good   | Eye    | /signs/good.gif     |
+| bad    | Bɔne   | /signs/bad.gif      |
+| water  | Nsuo   | /signs/water.gif    |
+| name   | Din    | /signs/name.gif     |
+| school | Sukuu  | /signs/school.gif   |
+
+## GhanaNLP API
+
+Base URL: `https://translation-api.ghananlp.org/v1`
+Auth header: `Ocp-Apim-Subscription-Key: <GHANANLP_API_KEY>`
+
+Translate: `POST /translate` `{ "in": "<text>", "lang": "en-tw" }` → string
+TTS:       `POST /tts`       `{ "text": "<twi>", "lang": "tw" }` → audio binary
+
+## Performance
+
+Pre-cache all 10 Twi audio clips on page mount via `preloadTwiAudio()` in `src/lib/audio.ts`.
+Play from cache on sign detection — zero latency.
