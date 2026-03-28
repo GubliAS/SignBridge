@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 function LogoMark() {
@@ -12,38 +13,73 @@ function LogoMark() {
 
 export function Footer() {
   return (
-    <footer className="bg-[#0a0a0a]">
+    <footer className="bg-[#0a0a0a] section-container">
       {/* 3-column grid */}
-      <div className="grid grid-cols-1 md:grid-cols-[1.4fr_1fr_1fr] gap-9 px-10 pt-11 pb-8">
-
+      <div className="grid grid-cols-1 md:grid-cols-[1.4fr_1fr_1fr] gap-9 pt-11 pb-8">
         {/* Col 1 — Brand */}
         <div className="text-center md:text-left">
-          <div className="flex items-center gap-[7px] text-[16px] font-[800] text-white tracking-[-0.4px] mb-2 md:justify-start justify-center">
-            <LogoMark />
-            SignBridge Ghana
-          </div>
+          {/* Logo */}
+          <Link
+            href="/"
+            className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green rounded"
+          >
+            <Image
+              src="/logo.png"
+              alt="SignBridge"
+              width={140}
+              height={40}
+              className="w-30 h-10 md:h-15 md:w-40 object-cover object-center"
+              priority
+            />
+          </Link>
           <p className="text-[11px] text-[#444] leading-[1.6] max-w-[200px] mb-3 mx-auto md:mx-0">
-            Real-time Ghanaian Sign Language translation — live, private, and free.
+            Real-time Ghanaian Sign Language translation — live, private, and
+            free.
           </p>
-          <p className="text-[10px] text-[#2a2a2a]">Built with GhanaNLP Khaya AI</p>
+          <p className="text-[10px] text-[#2a2a2a]">
+            Built with GhanaNLP Khaya AI
+          </p>
         </div>
 
         {/* Col 2 — App modes */}
         <div className="text-center md:text-left">
-          <p className="text-[9px] font-[800] text-[#444] uppercase tracking-[0.1em] mb-3">App modes</p>
+          <p className="text-[9px] font-[800] text-[#444] uppercase tracking-[0.1em] mb-3">
+            App modes
+          </p>
           <div className="flex flex-col gap-[7px]">
-            <Link href="/translate" className="text-[12px] text-[#666] hover:text-[#aaa] transition-colors">Sign → Text</Link>
-            <Link href="/learn"     className="text-[12px] text-[#666] hover:text-[#aaa] transition-colors">Learn GSL</Link>
-            <Link href="/speak"     className="text-[12px] text-[#666] hover:text-[#aaa] transition-colors">Text → Sign</Link>
+            <Link
+              href="/translate"
+              className="text-[12px] text-[#666] hover:text-[#aaa] transition-colors"
+            >
+              Sign → Text
+            </Link>
+            <Link
+              href="/learn"
+              className="text-[12px] text-[#666] hover:text-[#aaa] transition-colors"
+            >
+              Learn GSL
+            </Link>
+            <Link
+              href="/speak"
+              className="text-[12px] text-[#666] hover:text-[#aaa] transition-colors"
+            >
+              Text → Sign
+            </Link>
           </div>
         </div>
 
         {/* Col 3 — About */}
         <div className="text-center md:text-left">
-          <p className="text-[9px] font-[800] text-[#444] uppercase tracking-[0.1em] mb-3">About</p>
+          <p className="text-[9px] font-[800] text-[#444] uppercase tracking-[0.1em] mb-3">
+            About
+          </p>
           <div className="flex flex-col gap-[7px]">
-            <span className="text-[12px] text-[#666]">Cursor Hackathon 2025</span>
-            <span className="text-[12px] text-[#666]">HANDS! Lab · Leiden Univ.</span>
+            <span className="text-[12px] text-[#666]">
+              Cursor Hackathon 2025
+            </span>
+            <span className="text-[12px] text-[#666]">
+              HANDS! Lab · Leiden Univ.
+            </span>
             <span className="text-[12px] text-[#666]">GhanaNLP · Khaya AI</span>
           </div>
         </div>
