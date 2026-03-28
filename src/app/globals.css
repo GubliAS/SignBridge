@@ -20,8 +20,8 @@
 
 @theme inline {
   /* Fonts */
-  --font-sans: var(--font-dm-sans);
-  --font-mono: var(--font-dm-mono);
+  --font-sans: 'Mona Sans Variable', 'Mona Sans', system-ui, sans-serif;
+  --font-mono: 'Mona Sans Variable', ui-monospace, monospace;
 
   /* Brand colors */
   --color-green:       var(--sb-green);
@@ -50,6 +50,8 @@
   /* Animations */
   --animate-sign-fade-in: signFadeIn 0.2s ease-out both;
   --animate-pulse-dot: pulseDot 1.6s ease-in-out infinite;
+  --animate-ticker: ticker 28s linear infinite;
+  --animate-scroll-line: scrollLine 2s ease infinite;
 }
 
 /* ─── KEYFRAMES ──────────────────────────────────────────────────────────── */
@@ -69,12 +71,37 @@
   50%       { opacity: .5; transform: scale(0.8); }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  @keyframes scrollLine {
+    0%        { transform: scaleY(0); transform-origin: top; }
+    50%       { transform: scaleY(1); transform-origin: top; }
+    51%       { transform: scaleY(1); transform-origin: bottom; }
+    100%      { transform: scaleY(0); transform-origin: bottom; }
+  }
+}
+
 /* ─── BASE ───────────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
 body {
-  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+  font-family: 'Mona Sans Variable', 'Mona Sans', system-ui, sans-serif;
   background: var(--sb-page-bg);
   color: var(--sb-black);
   -webkit-font-smoothing: antialiased;
+}
+
+@layer components{
+  /* --- Layout --- */
+  .section-container {
+    @apply w-full mx-auto px-5 md:px-10 xl:px-25 xl:mx-0;
+  }
+
+  .section-padding {
+    @apply py-16 md:py-20 lg:py-24;
+  }
 }

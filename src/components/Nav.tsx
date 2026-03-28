@@ -1,29 +1,16 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { ArrowRight } from "lucide-react";
 
 const NAV_LINKS = [
-  { label: 'Translate',   href: '/translate' },
-  { label: 'Learn GSL',   href: '/learn'     },
-  { label: 'Text → Sign', href: '/speak'     },
+  { label: "Translate", href: "/translate" },
+  { label: "Learn GSL", href: "/learn" },
+  { label: "Text → Sign", href: "/speak" },
 ] as const;
-
-/* Diamond logo mark */
-function LogoMark({ size = 24 }: { size?: number }) {
-  const s = Math.round(size * 0.46);
-  return (
-    <div
-      style={{ width: size, height: size }}
-      className="flex items-center justify-center rounded-full bg-green flex-shrink-0"
-    >
-      <svg width={s} height={s} viewBox="0 0 11 11" fill="none" aria-hidden="true">
-        <path d="M5.5 1L9 4.5L5.5 8L2 4.5L5.5 1Z" fill="white" />
-      </svg>
-    </div>
-  );
-}
 
 export function Nav() {
   const pathname = usePathname();
@@ -32,16 +19,21 @@ export function Nav() {
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-[#f0f0f0]">
       {/* Main bar */}
-      <div className="flex items-center justify-between px-7 py-[15px]">
-
+      <div className="flex items-center justify-between  py-[15px] section-container">
         {/* Logo */}
         <Link
           href="/"
-          className="flex items-center gap-[7px] text-[15px] font-[800] text-ink tracking-[-0.3px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green rounded"
+          className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green rounded"
           onClick={() => setOpen(false)}
         >
-          <LogoMark size={24} />
-          SignBridge
+          <Image
+            src="/logo.png"
+            alt="SignBridge"
+            width={140}
+            height={40}
+            className="w-30 h-10 md:h-15 md:w-40 object-cover object-center"
+            priority
+          />
         </Link>
 
         {/* Desktop nav links */}
@@ -52,10 +44,10 @@ export function Nav() {
               <Link
                 key={href}
                 href={href}
-                className={`px-[11px] py-[6px] text-[11px] font-[600] rounded-[7px] transition-colors ${
+                className={`px-[11px] py-[6px] text-sm md:text-[15px] font-medium rounded-[7px] transition-colors ${
                   active
-                    ? 'text-ink bg-[#f5f5f5] font-[700]'
-                    : 'text-[#999] hover:text-ink hover:bg-[#f5f5f5]'
+                    ? "text-ink bg-[#f5f5f5] font-[700]"
+                    : "text-[#999] hover:text-ink hover:bg-[#f5f5f5]"
                 }`}
               >
                 {label}
@@ -67,9 +59,10 @@ export function Nav() {
         {/* Desktop CTA */}
         <Link
           href="/translate"
-          className="hidden md:inline-flex items-center bg-ink text-white text-[12px] font-[700] px-[18px] py-[8px] rounded-pill transition-colors hover:bg-[#222]"
+          className="hidden md:inline-flex gap-1.5 items-center bg-ink text-white text-sm font-medium px-[18px] py-[8px] rounded-pill transition-colors hover:bg-[#222]"
         >
-          Try it free →
+          Try it free
+          <ArrowRight size={14} />
         </Link>
 
         {/* Mobile hamburger */}
@@ -100,7 +93,9 @@ export function Nav() {
                 href={href}
                 onClick={() => setOpen(false)}
                 className={`rounded-lg px-3 py-[10px] text-[13px] font-[600] transition-colors ${
-                  active ? 'text-ink font-[700] bg-[#f5f5f5]' : 'text-[#777] hover:text-ink'
+                  active
+                    ? "text-ink font-[700] bg-[#f5f5f5]"
+                    : "text-[#777] hover:text-ink"
                 }`}
               >
                 {label}
