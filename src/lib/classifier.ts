@@ -5,7 +5,7 @@ export type Landmark = { x: number; y: number; z: number };
 
 export type ClassifyResult = { sign: string; confidence: number } | null;
 
-// ─── Finger helpers ───────────────────────────────────────────────────────────
+// --- Finger helpers -----------------------------------------------------------
 // y increases DOWNWARD in normalised MediaPipe coords.
 // tip.y < pip.y  →  tip is HIGHER on screen  →  finger is extended
 // tip.y > pip.y  →  tip is LOWER  on screen  →  finger is curled
@@ -13,7 +13,7 @@ export type ClassifyResult = { sign: string; confidence: number } | null;
 const ext  = (tip: Landmark, pip: Landmark): boolean => tip.y < pip.y;
 const curl = (tip: Landmark, pip: Landmark): boolean => tip.y > pip.y;
 
-// ─── Rule table ───────────────────────────────────────────────────────────────
+// --- Rule table ---------------------------------------------------------------
 // Each rule receives the full 21-landmark array and returns true/false.
 // Rules are checked in order; first match wins.
 
@@ -108,7 +108,7 @@ const RULES: [string, Rule][] = [
   ],
 ];
 
-// ─── Classifier ───────────────────────────────────────────────────────────────
+// --- Classifier ---------------------------------------------------------------
 
 export function classifySign(lm: Landmark[]): ClassifyResult {
   if (!lm || lm.length < 21) return null;

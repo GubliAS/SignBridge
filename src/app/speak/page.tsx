@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { SIGNS, SIGN_MAP, type Lang, type Sign } from '@/lib/signs';
 import { SignGif } from '@/components/SignGif';
 
-// ─── Word → Sign resolution ────────────────────────────────────────────────
+// --- Word → Sign resolution ------------------------------------------------
 
 function resolveWord(word: string, lang: Lang): Sign | null {
   const lower = word.toLowerCase();
@@ -12,7 +12,7 @@ function resolveWord(word: string, lang: Lang): Sign | null {
   return SIGNS.find((s) => s.twi.toLowerCase() === lower) ?? null;
 }
 
-// ─── Sub-components ─────────────────────────────────────────────────────────
+// --- Sub-components ---------------------------------------------------------
 
 function SignWordCard({ word, sign }: { word: string; sign: Sign | null }) {
   if (sign) {
@@ -39,7 +39,7 @@ function SignWordCard({ word, sign }: { word: string; sign: Sign | null }) {
   );
 }
 
-// ─── Page ────────────────────────────────────────────────────────────────────
+// --- Page --------------------------------------------------------------------
 
 export default function SpeakPage() {
   const [inputLang, setInputLang] = useState<Lang>('en');
@@ -63,14 +63,14 @@ export default function SpeakPage() {
   return (
     <main className="min-h-dvh bg-white">
 
-      {/* ── Header ── */}
+      {/* -- Header -- */}
       <header className="bg-white border-b border-[#f0f0f0] px-7 py-[22px]">
         <div className="text-[10px] font-[700] text-[#bbb] uppercase tracking-[0.08em] mb-1">Mode</div>
         <h1 className="text-[24px] font-[900] text-ink tracking-[-0.8px] mb-1">Text → Sign</h1>
         <p className="text-[12px] text-[#bbb]">Type a word or phrase to see the corresponding Ghanaian Sign Language GIFs</p>
       </header>
 
-      {/* ── Input zone ── */}
+      {/* -- Input zone -- */}
       <section className="bg-[#fafafa] border-b border-[#f0f0f0] px-7 py-6">
 
         {/* Language row */}
@@ -123,13 +123,13 @@ export default function SpeakPage() {
         </form>
       </section>
 
-      {/* ── Vocabulary hint ── */}
+      {/* -- Vocabulary hint -- */}
       <div className="bg-[#fffbcc] border-b border-[#ffe566] px-7 py-[11px] text-[11px] text-[#776600] flex items-start gap-[7px]">
         <span className="font-[800] text-[#554400] whitespace-nowrap">Supported signs:</span>
         <span>hello · yes · no · help · stop · good · bad · water · name · school — unknown words show a placeholder card</span>
       </div>
 
-      {/* ── Output area ── */}
+      {/* -- Output area -- */}
       <section className="px-7 py-6">
         {submitted && words.length > 0 ? (
           <>

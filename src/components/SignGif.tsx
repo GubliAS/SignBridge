@@ -27,7 +27,7 @@ export function SignGif({ sign, className = '', size }: SignGifProps) {
 
   return (
     <img
-      src={sign.gifPath}
+      src={sign.imgPath}
       alt={`${sign.label} sign in Ghanaian Sign Language`}
       onError={() => setFailed(true)}
       style={style}

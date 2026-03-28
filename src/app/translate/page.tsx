@@ -18,7 +18,7 @@ const HandCamera = dynamic(
   { ssr: false },
 );
 
-// ─── Types ──────────────────────────────────────────────────────────────────
+// --- Types ------------------------------------------------------------------
 
 interface SignResult {
   english:   string;
@@ -27,7 +27,7 @@ interface SignResult {
   lang:      Lang;
 }
 
-// ─── Sub-components ──────────────────────────────────────────────────────────
+// --- Sub-components ----------------------------------------------------------
 
 function LangDropdown({ value, onChange }: { value: Lang; onChange: (l: Lang) => void }) {
   return (
@@ -61,7 +61,7 @@ function ShieldIcon() {
   );
 }
 
-// ─── Page ────────────────────────────────────────────────────────────────────
+// --- Page --------------------------------------------------------------------
 
 export default function TranslatePage() {
   const [lang,         setLang]         = useState<Lang>('en');
@@ -146,7 +146,7 @@ export default function TranslatePage() {
   return (
     <main className="flex flex-col bg-white min-h-[calc(100dvh-60px)]">
 
-      {/* ── Header ── */}
+      {/* -- Header -- */}
       <header className="flex items-center justify-between border-b border-[#f0f0f0] px-7 py-[18px] bg-white flex-shrink-0">
         <div>
           <div className="text-[9px] font-[800] text-green uppercase tracking-[0.12em] mb-[3px]">Mode</div>
@@ -166,7 +166,7 @@ export default function TranslatePage() {
         </div>
       )}
 
-      {/* ── Body — two-column on desktop, stacked on mobile ── */}
+      {/* -- Body — two-column on desktop, stacked on mobile -- */}
       <div className="flex flex-col md:grid md:grid-cols-[1fr_340px] flex-1">
 
         {/* Camera column */}

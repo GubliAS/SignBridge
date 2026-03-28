@@ -25,7 +25,7 @@ export function HandCamera({ onSign, active }: HandCameraProps) {
   useEffect(() => { onSignRef.current = onSign; });
 
   useEffect(() => {
-    // ── Inactive: tear down anything running ──────────────────────────────
+    // -- Inactive: tear down anything running ------------------------------
     if (!active) {
       cancelAnimationFrame(rafId.current);
       clearTimeout(debounceTimer.current);
@@ -39,7 +39,7 @@ export function HandCamera({ onSign, active }: HandCameraProps) {
       return;
     }
 
-    // ── Active: load MediaPipe + start camera ─────────────────────────────
+    // -- Active: load MediaPipe + start camera -----------------------------
     let cancelled = false;
 
     import('@mediapipe/hands').then(({ Hands, HAND_CONNECTIONS }) => {
