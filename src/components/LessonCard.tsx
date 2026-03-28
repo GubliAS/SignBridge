@@ -29,8 +29,8 @@ export function LessonCard({ sign, onTryIt }: LessonCardProps) {
 
       {/* Body */}
       <div className="p-[10px]">
-        <p className="text-base font-bold text-ink tracking-[-0.3px] mb-[1px] capitalize">{sign.label}</p>
-        <p className="text-sm text-[#aaa] font-semibold mb-2">{sign.twi}</p>
+        <p className="text-base font-semibold text-ink tracking-[-0.3px] mb-[1px] capitalize">{sign.label}</p>
+        <p className="text-sm text-[#aaa] font-regular mb-2">{sign.twi}</p>
         <button
           type="button"
           onClick={() => onTryIt(sign)}

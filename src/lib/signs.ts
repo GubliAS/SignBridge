@@ -39,3 +39,26 @@ export const SIGNS: Sign[] = [
 export const SIGN_MAP: Record<string, Sign> = Object.fromEntries(
   SIGNS.map((s) => [s.label, s]),
 );
+
+/**
+ * Languages that have static lookup data for text → sign resolution.
+ * English matches `sign.label`; Twi matches `sign.twi`.
+ * Ewe and Ga require a live API call and are not supported as input.
+ */
+export const INPUT_SUPPORTED_LANGS: Lang[] = ['en', 'tw'];
+
+/** Example words a user can type, keyed by language. */
+export const LANG_EXAMPLES: Record<Lang, string> = {
+  en:  'hello · yes · help · stop · good · bad · water · name · school',
+  tw:  'Mahɔ · Aane · Boa me · Gyae · Eye · Bɔne · Nsuo · Din · Sukuu',
+  ee:  '',   // not yet supported for input
+  gaa: '',   // not yet supported for input
+};
+
+/** Placeholder text for the text input, keyed by language. */
+export const LANG_PLACEHOLDER: Record<Lang, string> = {
+  en:  'e.g. hello yes water school',
+  tw:  'e.g. Mahɔ Aane Nsuo Sukuu',
+  ee:  'Ewe input not yet supported — try English or Twi',
+  gaa: 'Ga input not yet supported — try English or Twi',
+};

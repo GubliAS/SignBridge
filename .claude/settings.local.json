@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "WebSearch",
+      "WebFetch(domain:www.omniglot.com)",
+      "WebFetch(domain:lughayangu.com)",
+      "WebFetch(domain:en.wikivoyage.org)",
+      "WebFetch(domain:www.osofo.net)",
+      "WebFetch(domain:pages.mtu.edu)"
     ]
   }
 }

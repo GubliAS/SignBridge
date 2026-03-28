@@ -255,7 +255,7 @@ function Stats() {
           key={n}
           className={`px-7 py-6 ${i < 3 ? "border-r border-[#f0f0f0]" : ""} ${i >= 2 ? "border-t border-[#f0f0f0] md:border-t-0" : ""}`}
         >
-          <div className="text-[36px] font-[900] text-ink tracking-[-2px] leading-none mb-[3px]">
+          <div className="text-[36px] font-bold text-ink tracking-[-2px] leading-none mb-[3px]">
             {n}
           </div>
           <div className="text-[11px] text-[#888] font-[500] leading-[1.4]">
@@ -274,11 +274,11 @@ function Problem() {
   return (
     <section className="section-container bg-white py-[72px] grid grid-cols-1 md:grid-cols-2 gap-14 items-center">
       <div>
-        <div className="flex items-center gap-3 text-[10px] font-[800] text-green uppercase tracking-[0.12em] mb-3">
+        <div className="flex items-center gap-3 text-[10px] font-semibold text-green uppercase tracking-[0.12em] mb-3">
           <span>The problem</span>
           <span className="h-px bg-green flex-[0_0_32px]" aria-hidden="true" />
         </div>
-        <h2 className="text-[clamp(28px,3.5vw,44px)] font-[900] text-ink tracking-[-2px] leading-[1.05] mb-5">
+        <h2 className="text-[clamp(28px,3.5vw,44px)] font-bold text-ink tracking-[-2px] leading-[1.05] mb-5">
           A community left
           <br />
           without language
@@ -298,7 +298,7 @@ function Problem() {
           <div className="w-10 h-10 bg-green rounded-[10px] flex items-center justify-center mb-[18px]">
             <Users size={18} className="text-white" aria-hidden="true" />
           </div>
-          <div className="text-[40px] font-[900] text-white tracking-[-2px] leading-none mb-1">
+          <div className="text-[40px] font-bold text-white tracking-[-2px] leading-none mb-1">
             90%+
           </div>
           <div className="text-[12px] text-[#888] leading-[1.5]">
@@ -311,7 +311,7 @@ function Problem() {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-[#f7f7f7] rounded-[18px] p-[18px]">
-            <div className="text-[28px] font-[900] tracking-[-1.5px] text-ink leading-none mb-1">
+            <div className="text-[28px] font-bold tracking-[-1.5px] text-ink leading-none mb-1">
               0
             </div>
             <div className="text-[11px] text-[#999] leading-[1.4]">
@@ -322,7 +322,7 @@ function Problem() {
             </div>
           </div>
           <div className="bg-[#f7f7f7] rounded-[18px] p-[18px]">
-            <div className="text-[28px] font-[900] tracking-[-1.5px] text-ink leading-none mb-1">
+            <div className="text-[28px] font-bold tracking-[-1.5px] text-ink leading-none mb-1">
               16
             </div>
             <div className="text-[11px] text-[#999] leading-[1.4]">
@@ -366,14 +366,14 @@ function HowItWorks() {
         {/* Header row */}
         <div className="flex flex-col md:flex-row md:justify-between md:items-end mb-14 gap-4">
           <div>
-            <div className="flex items-center gap-3 text-[10px] font-[800] text-[#444] uppercase tracking-[0.12em] mb-3">
+            <div className="flex items-center gap-3 text-[10px] font-semibold text-[#444] uppercase tracking-[0.12em] mb-3">
               <span>How it works</span>
               <span
                 className="h-px bg-[#444] flex-[0_0_32px]"
                 aria-hidden="true"
               />
             </div>
-            <h2 className="text-[clamp(28px,3.5vw,44px)] font-[900] text-white tracking-[-2px] leading-[1.05]">
+            <h2 className="text-[clamp(28px,3.5vw,44px)] font-bold text-white tracking-[-2px] leading-[1.05]">
               Three steps.
               <br />
               No setup required.
@@ -400,14 +400,14 @@ function HowItWorks() {
               <div className="absolute inset-0 bg-gradient-to-br from-[rgba(29,158,117,0.06)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
               {/* Large background step number */}
-              <div className="text-[80px] font-[900] font-mono text-[#2a2a2a] leading-none tracking-[-3px] mb-4 group-hover:text-[rgba(29,158,117,0.22)] transition-colors duration-300 select-none">
+              <div className="text-[80px] font-bold font-mono text-[#2a2a2a] leading-none tracking-[-3px] mb-4 group-hover:text-[rgba(29,158,117,0.22)] transition-colors duration-300 select-none">
                 {n}
               </div>
 
               {/* Expanding green line */}
               <div className="w-10 h-[2px] bg-green mb-6 motion-safe:group-hover:w-20 transition-all duration-300" />
 
-              <div className="text-[18px] font-[800] text-white tracking-[-0.4px] mb-2 leading-[1.25]">
+              <div className="text-[18px] font-semibold text-white tracking-[-0.4px] mb-2 leading-[1.25]">
                 {title}
               </div>
               <div className="text-[13px] text-[#555] leading-[1.7] mb-6">
@@ -462,11 +462,11 @@ function ModeCards() {
   return (
     <section className="bg-white py-[72px]">
       <div className="section-container">
-        <div className="flex items-center gap-3 text-[10px] font-[800] text-[#999] uppercase tracking-[0.12em] mb-3">
+        <div className="flex items-center gap-3 text-[10px] font-semibold text-[#999] uppercase tracking-[0.12em] mb-3">
           <span>What you can do</span>
           <span className="h-px bg-[#ccc] flex-[0_0_32px]" aria-hidden="true" />
         </div>
-        <h2 className="text-[clamp(28px,3.5vw,44px)] font-[900] text-ink tracking-[-2px] leading-[1.05] mb-8">
+        <h2 className="text-[clamp(28px,3.5vw,44px)] font-bold text-ink tracking-[-2px] leading-[1.05] mb-8">
           Three ways to
           <br />
           use SignBridge
@@ -486,7 +486,7 @@ function ModeCards() {
                 <Icon size={18} className="text-white" aria-hidden="true" />
               </div>
               <div
-                className={`text-[24px] font-[900] tracking-[-1px] leading-[1.1] mb-2 ${feat ? "text-white" : "text-ink"}`}
+                className={`text-[24px] font-bold tracking-[-1px] leading-[1.1] mb-2 ${feat ? "text-white" : "text-ink"}`}
               >
                 {title}
               </div>
@@ -545,11 +545,11 @@ function Personas() {
   return (
     <section className="bg-[#fafafa] border-t border-[#f0f0f0] py-[72px]">
       <div className="section-container">
-        <div className="flex items-center gap-3 text-[10px] font-[800] text-[#999] uppercase tracking-[0.12em] mb-3">
+        <div className="flex items-center gap-3 text-[10px] font-semibold text-[#999] uppercase tracking-[0.12em] mb-3">
           <span>Who we serve</span>
           <span className="h-px bg-[#ccc] flex-[0_0_32px]" aria-hidden="true" />
         </div>
-        <h2 className="text-[clamp(28px,3.5vw,44px)] font-[900] text-ink tracking-[-2px] leading-[1.05] mb-8">
+        <h2 className="text-[clamp(28px,3.5vw,44px)] font-bold text-ink tracking-[-2px] leading-[1.05] mb-8">
           Built for real people
           <br />
           in real situations
@@ -570,7 +570,7 @@ function Personas() {
                   aria-hidden="true"
                 />
               </div>
-              <div className="text-[17px] font-[800] text-ink tracking-[-0.4px] mb-[7px]">
+              <div className="text-[17px] font-semibold text-ink tracking-[-0.4px] mb-[7px]">
                 {title}
               </div>
               <div className="text-[12px] text-[#888] leading-[1.65]">
@@ -591,14 +591,14 @@ function Africa() {
     <section className="bg-[#111] px-10 py-[72px] grid grid-cols-1 md:grid-cols-2 gap-14 items-center">
       <div className="section-container">
         <div>
-          <div className="flex items-center gap-3 text-[10px] font-[800] text-green uppercase tracking-[0.12em] mb-3">
+          <div className="flex items-center gap-3 text-[10px] font-semibold text-green uppercase tracking-[0.12em] mb-3">
             <span>The bigger picture</span>
             <span
               className="h-px bg-green flex-[0_0_32px]"
               aria-hidden="true"
             />
           </div>
-          <h2 className="text-[clamp(28px,3.5vw,44px)] font-[900] text-white tracking-[-2px] leading-[1.05] mb-[18px]">
+          <h2 className="text-[clamp(28px,3.5vw,44px)] font-bold text-white tracking-[-2px] leading-[1.05] mb-[18px]">
             A continent-wide
             <br />
             communication crisis
@@ -616,7 +616,7 @@ function Africa() {
         </div>
       </div>
       <div className="bg-[#1a1a1a] rounded-[24px] p-7">
-        <div className="text-[52px] font-[900] text-white tracking-[-3px] leading-none mb-[6px]">
+        <div className="text-[52px] font-bold text-white tracking-[-3px] leading-none mb-[6px]">
           40M+
         </div>
         <div className="text-[12px] text-[#555] leading-[1.5] mb-[20px]">
@@ -642,7 +642,7 @@ function Africa() {
               key={badge}
               className="bg-[#222] border-l-2 border-green pl-4 pr-4 py-4 hover:pl-6 transition-all duration-200 cursor-default"
             >
-              <div className="text-[9px] font-[800] uppercase tracking-[0.1em] text-green-dark font-mono mb-[4px]">
+              <div className="text-[9px] font-semibold uppercase tracking-[0.1em] text-green-dark font-mono mb-[4px]">
                 {badge}
               </div>
               <div className="text-[11px] text-[#555] leading-[1.5]">

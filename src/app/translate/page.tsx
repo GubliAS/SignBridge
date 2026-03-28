@@ -12,6 +12,7 @@ import {
 } from '@/lib/audio';
 import { LANGUAGES, SIGN_MAP, SIGNS, type Lang } from '@/lib/signs';
 import type { TranslateResponseBody } from '@/app/api/translate/route';
+import { LangDropdown } from '@/components/LangDropdown';
 
 // ssr:false is belt-and-suspenders alongside 'use client' + lazy MediaPipe import
 const HandCamera = dynamic(
@@ -29,49 +30,6 @@ interface SignResult {
 }
 
 // --- Sub-components ----------------------------------------------------------
-
-function LangDropdown({
-  value,
-  onChange,
-}: {
-  value: Lang;
-  onChange: (l: Lang) => void;
-}) {
-  return (
-    <div className="relative inline-flex items-center">
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value as Lang)}
-        aria-label="Output language"
-        className="appearance-none bg-[#f5f5f5] rounded-pill pl-4 pr-8 py-[7px] text-[11px] font-bold text-ink border-none outline-none cursor-pointer hover:bg-[#ececec] transition-colors"
-      >
-        {(Object.entries(LANGUAGES) as [Lang, { label: string }][]).map(
-          ([code, { label }]) => (
-            <option key={code} value={code}>
-              {label}
-            </option>
-          ),
-        )}
-      </select>
-      <svg
-        className="pointer-events-none absolute right-[10px] top-1/2 -translate-y-1/2"
-        width="10"
-        height="6"
-        viewBox="0 0 10 6"
-        fill="none"
-        aria-hidden="true"
-      >
-        <path
-          d="M1 1L5 5L9 1"
-          stroke="#999"
-          strokeWidth="1.4"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </div>
-  );
-}
 
 function ShieldIcon() {
   return (
@@ -206,8 +164,8 @@ export default function TranslatePage() {
             </h1>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] text-[#bbb] font-semibold">Output</span>
-            <LangDropdown value={lang} onChange={handleLangChange} />
+            <span className="text-xs md:text-sm text-[#bbb] font-medium">Output</span>
+            <LangDropdown value={lang} onChange={handleLangChange} ariaLabel="Output language" />
           </div>
         </header>
 
@@ -309,7 +267,7 @@ export default function TranslatePage() {
                     </p>
                   </div>
                   {lang !== 'en' && (
-                    <div className="text-[10px] text-[#bbb] bg-[#fafafa] border border-[#f0f0f0] rounded-pill px-3 py-[5px]">
+                    <div className="text-xs md:text-sm text-[#bbb] bg-[#fafafa] border border-[#f0f0f0] rounded-pill px-3 py-[5px]">
                       Output:{' '}
                       <span className="font-bold text-[#999]">
                         {currentLangLabel}
