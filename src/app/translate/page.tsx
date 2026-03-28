@@ -11,6 +11,7 @@ import {
 } from "@/lib/audio";
 import { SIGN_MAP, SIGNS, type Lang } from "@/lib/signs";
 import type { TranslateResponseBody } from "@/app/api/translate/route";
+import Image from "next/image";
 
 // ssr:false is belt-and-suspenders alongside 'use client' + lazy MediaPipe import
 const HandCamera = dynamic(
@@ -306,6 +307,7 @@ export default function TranslatePage() {
                       <div className="w-[35px] h-[35px] bg-[#e8e8e8] rounded-[6px] mx-auto mb-1 flex items-center justify-center text-[8px] text-[#ccc]">
                         gif
                       </div>
+
                       <div className="text-[11px] font-[700] text-[#555]">
                         {s.label}
                       </div>
@@ -327,9 +329,19 @@ export default function TranslatePage() {
                         }`}
                       >
                         <div
-                          className={`w-[45px] h-[45px] rounded-[6px] mx-auto mb-1 flex items-center justify-center text-[8px] ${active ? "bg-[#c8edd8] text-green-dark" : "bg-[#e8e8e8] text-[#ccc]"}`}
+                          className={`w-[45px] h-[45px] rounded-[6px] mx-auto mb-1 flex items-center justify-center text-[8px] overflow-hidden ${active ? "bg-[#c8edd8] text-green-dark" : "bg-[#e8e8e8] text-[#ccc]"}`}
                         >
-                          gif
+                          {s?.imgPath ? (
+                            <Image
+                              src={s.imgPath}
+                              width={100000}
+                              height={100000}
+                              alt={`${label} sign`}
+                              className="w-full h-full object-cover "
+                            />
+                          ) : (
+                            <span aria-hidden>?</span>
+                          )}
                         </div>
                         <div
                           className={`capitalize text-xs font-[700] ${active ? "text-green-dark" : "text-[#555]"}`}
