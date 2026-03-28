@@ -11,12 +11,12 @@ const HandCamera = dynamic(
   { ssr: false },
 );
 
-// ─── Types ─────────────────────────────────────────────────────────────────
+// --- Types -----------------------------------------------------------------
 
 type FilterTab = "all" | SignCategory;
 type TryResult = "idle" | "success" | "wrong";
 
-// ─── Constants ─────────────────────────────────────────────────────────────
+// --- Constants -------------------------------------------------------------
 
 const TABS: { label: string; value: FilterTab }[] = [
   { label: "All", value: "all" },
@@ -45,7 +45,7 @@ const CONFETTI_DOTS = [
   { color: "bg-orange-400", x: "-45px", y: "-65px", delay: "45ms" },
 ];
 
-// ─── Sub-components ─────────────────────────────────────────────────────────
+// --- Sub-components ---------------------------------------------------------
 
 function ConfettiBurst() {
   return (
@@ -65,7 +65,7 @@ function ConfettiBurst() {
   );
 }
 
-// ─── Modal ──────────────────────────────────────────────────────────────────
+// --- Modal ------------------------------------------------------------------
 
 interface TryItModalProps {
   sign: Sign;
@@ -203,7 +203,7 @@ function TryItModal({
   );
 }
 
-// ─── Page ───────────────────────────────────────────────────────────────────
+// --- Page -------------------------------------------------------------------
 
 export default function LearnPage() {
   const [filter, setFilter] = useState<FilterTab>("all");

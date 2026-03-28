@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* ─── DESIGN TOKENS ──────────────────────────────────────────────────────── */
+/* --- DESIGN TOKENS -------------------------------------------------------- */
 :root {
   --sb-green:       #1D9E75;
   --sb-green-light: #E1F5EE;
@@ -54,7 +54,7 @@
   --animate-scroll-line: scrollLine 2s ease infinite;
 }
 
-/* ─── KEYFRAMES ──────────────────────────────────────────────────────────── */
+/* --- KEYFRAMES ------------------------------------------------------------ */
 @keyframes signFadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0);   }
@@ -85,7 +85,7 @@
   }
 }
 
-/* ─── BASE ───────────────────────────────────────────────────────────────── */
+/* --- BASE ----------------------------------------------------------------- */
 *, *::before, *::after { box-sizing: border-box; }
 
 body {
