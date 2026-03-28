@@ -199,14 +199,15 @@ function Hero() {
         <div className="flex flex-wrap items-center justify-center gap-3 mb-5">
           <Link
             href="/translate"
-            className="inline-flex items-center gap-[7px] bg-green text-white text-[13px] font-[700] px-6 py-3 rounded-pill hover:bg-green-dark transition-colors"
+            className="inline-flex items-center gap-[7px] bg-green text-white text-[13px] font-medium px-6 py-3 rounded-pill hover:bg-green-dark transition-colors"
           >
             <Video size={14} aria-hidden="true" />
-            Start translating →
+            Start translating
+            <ArrowRight size={14} />
           </Link>
           <Link
             href="/learn"
-            className="bg-white inline-flex items-center gap-[6px] border border-[#ddd] text-ink text-[13px] font-[600] px-6 py-3 rounded-pill hover:border-[#bbb] transition-colors"
+            className="bg-white inline-flex items-center gap-[6px] border border-[#ddd] text-ink text-[13px] font-medium px-6 py-3 rounded-pill hover:border-[#bbb] transition-colors"
           >
             Learn signs
           </Link>
