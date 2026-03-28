@@ -288,7 +288,7 @@ export default function LearnPage() {
           </div>
 
           {/* Card grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[10px] p-7">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[10px]">
             {filtered.map((sign) => (
               <LessonCard key={sign.label} sign={sign} onTryIt={handleTryIt} />
             ))}

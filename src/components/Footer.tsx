@@ -1,10 +1,16 @@
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from "next/image";
+import Link from "next/link";
 
 function LogoMark() {
   return (
     <div className="flex items-center justify-center w-5 h-5 rounded-full bg-green flex-shrink-0">
-      <svg width="9" height="9" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+      <svg
+        width="9"
+        height="9"
+        viewBox="0 0 11 11"
+        fill="none"
+        aria-hidden="true"
+      >
         <path d="M5.5 1L9 4.5L5.5 8L2 4.5L5.5 1Z" fill="white" />
       </svg>
     </div>
@@ -32,36 +38,34 @@ export function Footer() {
               priority
             />
           </Link>
-          <p className="text-[11px] text-[#444] leading-[1.6] max-w-[200px] mb-3 mx-auto md:mx-0">
+          <p className="text-xs md:text-sm text-[#444] leading-[1.6] max-w-[200px] md:max-w-[300px] mb-3 mx-auto md:mx-0">
             Real-time Ghanaian Sign Language translation — live, private, and
             free.
           </p>
-          <p className="text-[10px] text-[#2a2a2a]">
-            Built with GhanaNLP Khaya AI
-          </p>
+          <p className="text-xs text-[#2a2a2a]">Built with GhanaNLP Khaya AI</p>
         </div>
 
         {/* Col 2 — App modes */}
         <div className="text-center md:text-left">
-          <p className="text-[9px] font-[800] text-[#444] uppercase tracking-[0.1em] mb-3">
+          <p className="text-xs font-semibold text-[#444] uppercase tracking-[0.1em] mb-3">
             App modes
           </p>
           <div className="flex flex-col gap-[7px]">
             <Link
               href="/translate"
-              className="text-[12px] text-[#666] hover:text-[#aaa] transition-colors"
+              className="text-sm text-[#666] hover:text-[#aaa] transition-colors"
             >
               Sign → Text
             </Link>
             <Link
               href="/learn"
-              className="text-[12px] text-[#666] hover:text-[#aaa] transition-colors"
+              className="text-sm text-[#666] hover:text-[#aaa] transition-colors"
             >
               Learn GSL
             </Link>
             <Link
               href="/speak"
-              className="text-[12px] text-[#666] hover:text-[#aaa] transition-colors"
+              className="text-sm text-[#666] hover:text-[#aaa] transition-colors"
             >
               Text → Sign
             </Link>
@@ -70,7 +74,7 @@ export function Footer() {
 
         {/* Col 3 — About */}
         <div className="text-center md:text-left">
-          <p className="text-[9px] font-[800] text-[#444] uppercase tracking-[0.1em] mb-3">
+          <p className="text-xs font-semibold text-[#444] uppercase tracking-[0.1em] mb-3">
             About
           </p>
           <div className="flex flex-col gap-[7px]">
