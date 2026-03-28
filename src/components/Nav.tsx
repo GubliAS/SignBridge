@@ -59,7 +59,7 @@ export function Nav() {
         {/* Desktop CTA */}
         <Link
           href="/translate"
-          className="hidden md:inline-flex gap-1.5 items-center bg-ink text-white text-sm font-medium px-[18px] py-[8px] rounded-pill transition-colors hover:bg-[#222]"
+          className="hidden md:inline-flex gap-1.5 items-center bg-ink text-white text-sm font-medium px-[18px] py-[10px] rounded-pill transition-colors hover:bg-[#222]"
         >
           Try it free
           <ArrowRight size={14} />
