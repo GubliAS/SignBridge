@@ -1,11 +1,13 @@
+export type Lang = 'en' | 'tw';
+
 export type SignCategory = 'greeting' | 'response' | 'action' | 'object';
 
-export interface Sign {
-  label: string;
-  twi: string;
+export type Sign = {
+  label:    string;
+  twi:      string;
+  gifPath:  string;
   category: SignCategory;
-  gifPath: string;
-}
+};
 
 export const SIGNS: Sign[] = [
   { label: 'hello',  twi: 'Mahɔ',   category: 'greeting', gifPath: '/signs/hello.gif'  },
@@ -20,6 +22,6 @@ export const SIGNS: Sign[] = [
   { label: 'school', twi: 'Sukuu',  category: 'object',   gifPath: '/signs/school.gif' },
 ];
 
-export const SIGN_MAP: Map<string, Sign> = new Map(
-  SIGNS.map((sign) => [sign.label, sign]),
+export const SIGN_MAP: Record<string, Sign> = Object.fromEntries(
+  SIGNS.map((s) => [s.label, s]),
 );
