@@ -29,9 +29,9 @@ export function Nav() {
           <Image
             src="/logo.png"
             alt="SignBridge"
-            width={140}
-            height={40}
-            className="w-30 h-10 md:h-15 md:w-40 object-cover object-center"
+            width={10000}
+            height={10000}
+            className="w-30 h-10 md:h-15 md:w-40 object-contain object-center"
             priority
           />
         </Link>
@@ -44,7 +44,7 @@ export function Nav() {
               <Link
                 key={href}
                 href={href}
-                className={`px-[11px] py-[6px] text-sm md:text-[15px] font-medium rounded-[7px] transition-colors ${
+                className={`px-[11px] py-[6px] text-sm lg:text-[15px] font-medium rounded-[7px] transition-colors ${
                   active
                     ? "text-ink bg-[#f5f5f5] font-[700]"
                     : "text-[#999] hover:text-ink hover:bg-[#f5f5f5]"
@@ -92,9 +92,9 @@ export function Nav() {
                 key={href}
                 href={href}
                 onClick={() => setOpen(false)}
-                className={`rounded-lg px-3 py-[10px] text-[13px] font-[600] transition-colors ${
+                className={`rounded-lg px-3 py-[10px] text-[13px] font-semibold transition-colors ${
                   active
-                    ? "text-ink font-[700] bg-[#f5f5f5]"
+                    ? "text-ink font-bold bg-[#f5f5f5]"
                     : "text-[#777] hover:text-ink"
                 }`}
               >

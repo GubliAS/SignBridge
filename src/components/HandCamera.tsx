@@ -174,7 +174,7 @@ export function HandCamera({ onSign, active }: HandCameraProps) {
     <div
       role="img"
       aria-label="Live camera feed with hand tracking"
-      className="relative w-full aspect-video rounded-2xl overflow-hidden bg-black"
+      className="relative w-full h-full aspect-video rounded-2xl overflow-hidden bg-black"
     >
       <video
         ref={videoRef}
