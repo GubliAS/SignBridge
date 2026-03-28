@@ -4,25 +4,37 @@ import type { Sign } from '@/lib/signs';
 import { SignGif } from '@/components/SignGif';
 
 export interface LessonCardProps {
-  sign: Sign;
+  sign:    Sign;
   onTryIt: (sign: Sign) => void;
 }
 
+const CATEGORY_LABELS: Record<string, string> = {
+  greeting: 'greeting',
+  response: 'response',
+  action:   'action',
+  object:   'object',
+};
+
 export function LessonCard({ sign, onTryIt }: LessonCardProps) {
   return (
-    <article className="flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-      <SignGif sign={sign} className="w-full" />
+    <article className="group rounded-[14px] border border-[#f0f0f0] bg-white overflow-hidden cursor-pointer transition-colors hover:border-green">
 
-      <div className="flex flex-1 flex-col gap-1 px-4 pt-3 pb-2">
-        <p className="text-lg font-bold capitalize leading-tight">{sign.label}</p>
-        <p className="text-sm text-gray-400">{sign.twi}</p>
+      {/* GIF area */}
+      <div className="h-[90px] bg-[#f5f5f5] border-b border-[#f0f0f0] relative flex items-center justify-center">
+        <SignGif sign={sign} className="w-full h-full" />
+        <span className="absolute top-[7px] right-[7px] bg-green-light text-green-dark text-[7px] font-[800] px-[7px] py-[2px] rounded-pill">
+          {CATEGORY_LABELS[sign.category]}
+        </span>
       </div>
 
-      <div className="px-4 pb-4">
+      {/* Body */}
+      <div className="p-[10px]">
+        <p className="text-[13px] font-[800] text-ink tracking-[-0.3px] mb-[1px] capitalize">{sign.label}</p>
+        <p className="text-[10px] text-[#aaa] font-[500] mb-2">{sign.twi}</p>
         <button
           type="button"
           onClick={() => onTryIt(sign)}
-          className="min-h-[48px] w-full rounded-full bg-brand-500 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600 active:scale-95"
+          className="w-full py-[7px] rounded-[7px] bg-ink text-white text-[10px] font-[700] transition-colors hover:bg-[#222] min-h-[44px]"
         >
           Try it
         </button>

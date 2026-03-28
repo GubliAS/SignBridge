@@ -6,11 +6,6 @@ import { SignGif } from '@/components/SignGif';
 
 // ─── Word → Sign resolution ────────────────────────────────────────────────
 
-/**
- * Given a single word and the input language, return the matching Sign or null.
- * - English input: looks up SIGN_MAP by lowercased word.
- * - Twi input:     matches against sign.twi values (case-insensitive).
- */
 function resolveWord(word: string, lang: Lang): Sign | null {
   const lower = word.toLowerCase();
   if (lang === 'en') return SIGN_MAP[lower] ?? null;
@@ -19,36 +14,32 @@ function resolveWord(word: string, lang: Lang): Sign | null {
 
 // ─── Sub-components ─────────────────────────────────────────────────────────
 
-interface SignWordCardProps {
-  word:  string;
-  sign:  Sign | null;
-}
-
-function SignWordCard({ word, sign }: SignWordCardProps) {
+function SignWordCard({ word, sign }: { word: string; sign: Sign | null }) {
   if (sign) {
     return (
-      <div className="flex w-32 shrink-0 flex-col items-center gap-2 sm:w-40">
-        <SignGif sign={sign} className="w-full rounded-2xl bg-gray-50" />
-        <p className="text-sm font-semibold capitalize">{sign.label}</p>
-        <p className="text-xs text-gray-400">{sign.twi}</p>
+      <div className="rounded-[14px] border border-[#f0f0f0] p-[14px] pt-[14px] text-center bg-white min-w-[82px]">
+        <div className="w-[54px] h-[54px] bg-[#f0f0f0] rounded-[8px] mx-auto mb-[6px] overflow-hidden">
+          <SignGif sign={sign} size={54} className="rounded-[8px]" />
+        </div>
+        <p className="text-[12px] font-[800] text-ink tracking-[-0.3px] mb-[2px] capitalize">{sign.label}</p>
+        <p className="text-[9px] text-green font-[700]">{sign.twi}</p>
       </div>
     );
   }
-
   return (
-    <div className="flex w-32 shrink-0 flex-col items-center gap-2 sm:w-40">
-      <div className="flex aspect-square w-full items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50">
-        <span className="text-center text-xs font-medium text-gray-400 px-2 break-words">
-          {word}
-        </span>
+    <div className="rounded-[14px] border-[1.5px] border-dashed border-[#e0e0e0] p-[14px] text-center bg-[#fafafa] min-w-[82px] opacity-70">
+      <div className="w-[54px] h-[54px] bg-[#f5f5f5] rounded-[8px] mx-auto mb-[6px] flex items-center justify-center">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <circle cx="10" cy="10" r="7.5" stroke="#ccc" strokeWidth="1.5" />
+          <path d="M10 6.5v4M10 13h.01" stroke="#ccc" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
       </div>
-      <p className="text-sm font-semibold text-gray-400">{word}</p>
-      <p className="text-xs text-gray-300">No sign found</p>
+      <p className="text-[12px] text-[#ccc] font-[600]">{word}</p>
     </div>
   );
 }
 
-// ─── Page ───────────────────────────────────────────────────────────────────
+// ─── Page ────────────────────────────────────────────────────────────────────
 
 export default function SpeakPage() {
   const [inputLang, setInputLang] = useState<Lang>('en');
@@ -69,57 +60,41 @@ export default function SpeakPage() {
     setWords([]);
   };
 
-  const matchedCount = submitted
-    ? words.filter((w) => resolveWord(w, inputLang) !== null).length
-    : 0;
-
   return (
-    <main className="flex min-h-dvh flex-col bg-background">
+    <main className="min-h-dvh bg-white">
 
-      {/* Header */}
-      <header className="px-4 pb-4 pt-8">
-        <h1 className="text-2xl font-bold">Speak in Sign Language</h1>
-        <p className="mt-1 text-sm text-gray-400">
-          Type a word or phrase to see its sign
-        </p>
+      {/* ── Header ── */}
+      <header className="bg-white border-b border-[#f0f0f0] px-7 py-[22px]">
+        <div className="text-[10px] font-[700] text-[#bbb] uppercase tracking-[0.08em] mb-1">Mode</div>
+        <h1 className="text-[24px] font-[900] text-ink tracking-[-0.8px] mb-1">Text → Sign</h1>
+        <p className="text-[12px] text-[#bbb]">Type a word or phrase to see the corresponding Ghanaian Sign Language GIFs</p>
       </header>
 
-      {/* Form */}
-      <section className="px-4 pb-6">
-        {/* Language selector */}
-        <div className="mb-4 flex items-center gap-3">
-          <span className="text-sm text-gray-500">I&apos;m typing in:</span>
-          <div className="flex items-center gap-1 rounded-full bg-gray-100 p-1">
-            <button
-              type="button"
-              onClick={() => handleLangChange('en')}
-              className={`rounded-full px-4 py-1 text-sm font-semibold transition-colors ${
-                inputLang === 'en'
-                  ? 'bg-brand-500 text-white'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              English
-            </button>
-            <button
-              type="button"
-              onClick={() => handleLangChange('tw')}
-              className={`rounded-full px-4 py-1 text-sm font-semibold transition-colors ${
-                inputLang === 'tw'
-                  ? 'bg-brand-500 text-white'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              Twi
-            </button>
+      {/* ── Input zone ── */}
+      <section className="bg-[#fafafa] border-b border-[#f0f0f0] px-7 py-6">
+
+        {/* Language row */}
+        <div className="flex items-center gap-[10px] mb-3">
+          <span className="text-[12px] text-[#888] font-[500]">I&apos;m typing in:</span>
+          <div className="flex bg-white border border-[#e0e0e0] rounded-pill p-[3px]">
+            {(['en', 'tw'] as const).map((l) => (
+              <button
+                key={l}
+                type="button"
+                onClick={() => handleLangChange(l)}
+                className={`px-[14px] py-[5px] rounded-pill text-[11px] font-[700] transition-colors ${
+                  inputLang === l ? 'bg-ink text-white' : 'text-[#aaa] hover:text-ink'
+                }`}
+              >
+                {l === 'en' ? 'English' : 'Twi'}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Input + submit */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
-          <label htmlFor="sign-input" className="sr-only">
-            Enter text to convert to signs
-          </label>
+        {/* Input + button */}
+        <form onSubmit={handleSubmit} className="flex gap-2">
+          <label htmlFor="sign-input" className="sr-only">Enter text to convert to signs</label>
           <input
             id="sign-input"
             type="text"
@@ -127,45 +102,64 @@ export default function SpeakPage() {
             onChange={(e) => setInputText(e.target.value)}
             placeholder={
               inputLang === 'en'
-                ? 'e.g. hello water school'
+                ? 'Type a word or phrase… e.g. hello yes water school'
                 : 'e.g. Mahɔ Nsuo Sukuu'
             }
-            className="min-h-[52px] flex-1 rounded-2xl border-2 border-gray-200 bg-white px-5 text-base outline-none transition-colors placeholder:text-gray-300 focus:border-brand-500"
+            className="flex-1 border-[1.5px] border-[#e0e0e0] rounded-[10px] px-4 py-3 text-[14px] bg-white text-ink placeholder:text-[#ccc] outline-none focus:border-green transition-colors min-h-[44px]"
             autoComplete="off"
             spellCheck={false}
           />
           <button
             type="submit"
             disabled={!inputText.trim()}
-            className="min-h-[52px] rounded-2xl bg-brand-500 px-8 text-base font-semibold text-white transition-colors hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
+            aria-label="Show signs"
+            className="bg-ink text-white px-5 py-3 rounded-[10px] text-[12px] font-[700] transition-colors hover:bg-[#222] disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-[5px] min-h-[44px]"
           >
-            Show Signs
+            Show signs
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+              <path d="M6.5 1L12 6.5L6.5 12M1 6.5h11" stroke="white" strokeWidth="1.3" strokeLinecap="round" />
+            </svg>
           </button>
         </form>
       </section>
 
-      {/* Results */}
-      {submitted && words.length > 0 && (
-        <section className="flex flex-col gap-4 px-4 pb-16">
-          {/* Match summary */}
-          <p className="text-sm text-gray-400">
-            {matchedCount} of {words.length} word{words.length !== 1 ? 's' : ''} found in GSL vocabulary
-          </p>
+      {/* ── Vocabulary hint ── */}
+      <div className="bg-[#fffbcc] border-b border-[#ffe566] px-7 py-[11px] text-[11px] text-[#776600] flex items-start gap-[7px]">
+        <span className="font-[800] text-[#554400] whitespace-nowrap">Supported signs:</span>
+        <span>hello · yes · no · help · stop · good · bad · water · name · school — unknown words show a placeholder card</span>
+      </div>
 
-          {/* Horizontal scroll row */}
-          <div
-            className="flex gap-4 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-            role="list"
-            aria-label="Sign results"
-          >
-            {words.map((word, i) => (
-              <div key={`${word}-${i}`} role="listitem">
-                <SignWordCard word={word} sign={resolveWord(word, inputLang)} />
-              </div>
-            ))}
+      {/* ── Output area ── */}
+      <section className="px-7 py-6">
+        {submitted && words.length > 0 ? (
+          <>
+            <div className="text-[9px] font-[800] text-[#bbb] uppercase tracking-[0.08em] mb-[14px]">
+              Signs for &lsquo;{inputText.trim()}&rsquo;
+            </div>
+            <div
+              className="flex gap-[10px] flex-wrap md:flex-wrap overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              role="list"
+              aria-label="Sign results"
+            >
+              {words.map((word, i) => (
+                <div key={`${word}-${i}`} role="listitem">
+                  <SignWordCard word={word} sign={resolveWord(word, inputLang)} />
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          /* Idle state */
+          <div className="flex flex-col items-center py-10 text-center">
+            <div className="w-[52px] h-[52px] bg-[#f5f5f5] rounded-[14px] flex items-center justify-center mb-3">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                <path d="M4 8h14M4 12h14M4 16h8" stroke="#ccc" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </div>
+            <p className="text-[13px] text-[#ccc] font-[500]">Type a word or phrase above to see its signs</p>
           </div>
-        </section>
-      )}
+        )}
+      </section>
 
     </main>
   );

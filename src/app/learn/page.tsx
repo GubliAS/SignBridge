@@ -13,8 +13,8 @@ const HandCamera = dynamic(
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
-type FilterTab  = 'all' | SignCategory;
-type TryResult  = 'idle' | 'success' | 'wrong';
+type FilterTab = 'all' | SignCategory;
+type TryResult = 'idle' | 'success' | 'wrong';
 
 // ─── Constants ─────────────────────────────────────────────────────────────
 
@@ -26,40 +26,35 @@ const TABS: { label: string; value: FilterTab }[] = [
   { label: 'Objects',   value: 'object'   },
 ];
 
-// Confetti dots: each uses CSS custom properties --cx/--cy set via Tailwind
-// arbitrary-value [var()] so positions are Tailwind-only, no inline style.
-// We pre-define 16 burst vectors and cycle colours from the brand palette.
 const CONFETTI_DOTS = [
-  { color: 'bg-brand-500',  x: '-40px', y: '-50px', delay: '0ms'   },
-  { color: 'bg-yellow-400', x: '30px',  y: '-60px', delay: '40ms'  },
-  { color: 'bg-pink-400',   x: '55px',  y: '-35px', delay: '80ms'  },
-  { color: 'bg-blue-400',   x: '60px',  y: '10px',  delay: '20ms'  },
-  { color: 'bg-orange-400', x: '45px',  y: '50px',  delay: '60ms'  },
-  { color: 'bg-brand-500',  x: '10px',  y: '65px',  delay: '100ms' },
-  { color: 'bg-yellow-400', x: '-30px', y: '60px',  delay: '30ms'  },
-  { color: 'bg-pink-400',   x: '-55px', y: '30px',  delay: '70ms'  },
-  { color: 'bg-blue-400',   x: '-65px', y: '-10px', delay: '10ms'  },
-  { color: 'bg-orange-400', x: '-50px', y: '-40px', delay: '50ms'  },
-  { color: 'bg-brand-500',  x: '20px',  y: '-75px', delay: '90ms'  },
-  { color: 'bg-yellow-400', x: '70px',  y: '-20px', delay: '15ms'  },
-  { color: 'bg-pink-400',   x: '75px',  y: '25px',  delay: '55ms'  },
-  { color: 'bg-blue-400',   x: '-20px', y: '75px',  delay: '35ms'  },
-  { color: 'bg-brand-100',  x: '-70px', y: '20px',  delay: '75ms'  },
-  { color: 'bg-orange-400', x: '-45px', y: '-65px', delay: '45ms'  },
+  { color: 'bg-green',       x: '-40px', y: '-50px', delay: '0ms'   },
+  { color: 'bg-yellow-400',  x: '30px',  y: '-60px', delay: '40ms'  },
+  { color: 'bg-pink-400',    x: '55px',  y: '-35px', delay: '80ms'  },
+  { color: 'bg-blue-400',    x: '60px',  y: '10px',  delay: '20ms'  },
+  { color: 'bg-orange-400',  x: '45px',  y: '50px',  delay: '60ms'  },
+  { color: 'bg-green',       x: '10px',  y: '65px',  delay: '100ms' },
+  { color: 'bg-yellow-400',  x: '-30px', y: '60px',  delay: '30ms'  },
+  { color: 'bg-pink-400',    x: '-55px', y: '30px',  delay: '70ms'  },
+  { color: 'bg-blue-400',    x: '-65px', y: '-10px', delay: '10ms'  },
+  { color: 'bg-orange-400',  x: '-50px', y: '-40px', delay: '50ms'  },
+  { color: 'bg-green',       x: '20px',  y: '-75px', delay: '90ms'  },
+  { color: 'bg-yellow-400',  x: '70px',  y: '-20px', delay: '15ms'  },
+  { color: 'bg-pink-400',    x: '75px',  y: '25px',  delay: '55ms'  },
+  { color: 'bg-blue-400',    x: '-20px', y: '75px',  delay: '35ms'  },
+  { color: 'bg-green-light', x: '-70px', y: '20px',  delay: '75ms'  },
+  { color: 'bg-orange-400',  x: '-45px', y: '-65px', delay: '45ms'  },
 ];
 
 // ─── Sub-components ─────────────────────────────────────────────────────────
 
 function ConfettiBurst() {
   return (
-    <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden rounded-2xl">
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden rounded-[18px]">
       {CONFETTI_DOTS.map((dot, i) => (
         <span
           key={i}
           className={`absolute h-3 w-3 rounded-full ${dot.color}`}
           style={{
-            // CSS custom properties drive the keyframe translate —
-            // this is the only viable pattern for per-dot burst vectors
             ['--cx' as string]: dot.x,
             ['--cy' as string]: dot.y,
             animation: `confettiBurst 0.7s ease-out ${dot.delay} both`,
@@ -86,80 +81,74 @@ function TryItModal({ sign, result, onDetect, onClose, onReset }: TryItModalProp
       role="dialog"
       aria-modal="true"
       aria-label={`Practice the ${sign.label} sign`}
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 sm:items-center sm:p-4"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 sm:items-center sm:p-4"
     >
-      <div className="relative flex w-full max-w-2xl flex-col gap-5 overflow-y-auto rounded-t-3xl bg-white p-6 pb-8 sm:rounded-3xl sm:p-8 max-h-[90dvh]">
+      <div className="w-full max-w-[560px] bg-white rounded-t-[16px] sm:rounded-[16px] overflow-hidden">
 
-        {/* Close */}
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close"
-          className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200"
-        >
-          ✕
-        </button>
+        {/* Header bar */}
+        <div className="bg-ink px-[18px] py-[11px] flex items-center justify-between">
+          <span className="text-[12px] font-[700] text-white">
+            Practise: <span className="capitalize">{sign.label}</span> · <span className="text-[#888]">{sign.twi}</span>
+          </span>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="w-[22px] h-[22px] bg-[#222] rounded-full flex items-center justify-center text-[10px] text-[#777] hover:text-white transition-colors"
+          >
+            ✕
+          </button>
+        </div>
 
-        <h2 className="text-xl font-bold">
-          Try:{' '}
-          <span className="capitalize text-brand-500">{sign.label}</span>
-        </h2>
-
-        {/* GIF + Camera */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {/* Target */}
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-              Target sign
-            </p>
-            <SignGif sign={sign} className="w-full max-w-[200px] rounded-2xl bg-gray-50" />
-            <p className="text-sm font-semibold capitalize">{sign.label}</p>
-            <p className="text-xs text-gray-400">{sign.twi}</p>
+        {/* Content — two column */}
+        <div className="grid grid-cols-2">
+          {/* Left — target sign */}
+          <div className="flex flex-col items-center justify-center gap-[6px] p-[22px] border-r border-[#f0f0f0] bg-[#fafafa]">
+            <div className="w-[80px] h-[80px] bg-[#e8e8e8] rounded-[10px] flex items-center justify-center mb-1 overflow-hidden">
+              <SignGif sign={sign} size={80} className="rounded-[10px]" />
+            </div>
+            <p className="text-[15px] font-[800] text-ink tracking-[-0.3px] capitalize">{sign.label}</p>
+            <p className="text-[11px] text-[#aaa]">{sign.twi}</p>
           </div>
 
-          {/* Camera */}
-          <div className="flex flex-col gap-2">
-            <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-              Your camera
-            </p>
+          {/* Right — live camera */}
+          <div className="bg-[#0d0d0d] min-h-[150px] flex items-center justify-center relative">
+            <div className="absolute top-2 left-[10px] flex items-center gap-1 bg-green text-white text-[7px] font-[800] px-[7px] py-[2px] rounded-pill tracking-[0.04em]">
+              <span className="w-[4px] h-[4px] rounded-full bg-white" />
+              LIVE
+            </div>
             <HandCamera active onSign={onDetect} />
           </div>
         </div>
 
-        {/* Feedback */}
-        <div
-          className={`relative flex min-h-[80px] flex-col items-center justify-center gap-1 rounded-2xl border-2 transition-colors duration-300 ${
-            result === 'success'
-              ? 'border-green-400 bg-green-50'
-              : result === 'wrong'
-              ? 'border-amber-300 bg-amber-50'
-              : 'border-gray-100 bg-gray-50'
-          }`}
-        >
-          {result === 'success' && (
+        {/* Footer bar */}
+        <div className={`relative px-[18px] py-[10px] flex items-center justify-between border-t ${result === 'success' ? 'bg-green-light border-[#c8edd8]' : 'bg-[#fafafa] border-[#f0f0f0]'}`}>
+          {result === 'success' ? (
             <>
               <ConfettiBurst />
-              <span className="text-3xl">✅</span>
-              <p className="text-base font-bold text-green-700">Perfect! Great job!</p>
-              <button
-                type="button"
-                onClick={onReset}
-                className="mt-1 text-xs text-green-600 underline underline-offset-2"
-              >
-                Try again
-              </button>
+              <div className="flex items-center gap-[6px] text-[11px] text-green-dark font-[700]">
+                <div className="w-4 h-4 rounded-full bg-green flex items-center justify-center">
+                  <svg width="8" height="8" viewBox="0 0 8 8" fill="none" aria-hidden="true">
+                    <path d="M1.5 4L3.5 6L6.5 2" stroke="white" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                Correct sign detected!
+              </div>
+              <div className="flex gap-2">
+                <button type="button" onClick={onReset} className="text-[10px] text-[#888] border border-[#ddd] px-3 py-[5px] rounded-[7px] bg-white">Try again</button>
+                <button type="button" onClick={onClose} className="text-[10px] text-[#888] border border-[#ddd] px-3 py-[5px] rounded-[7px] bg-white">Close</button>
+              </div>
             </>
-          )}
-
-          {result === 'wrong' && (
+          ) : (
             <>
-              <span className="text-2xl">👋</span>
-              <p className="text-sm font-semibold text-amber-700">Not quite — try again!</p>
+              {result === 'wrong' && (
+                <div className="text-[10px] text-[#774444] font-[600] flex items-center gap-2">
+                  <span>👋</span> Different sign — try again
+                </div>
+              )}
+              {result === 'idle' && <span className="text-[10px] text-[#aaa]">Make the sign shown above</span>}
+              <button type="button" onClick={onClose} className="text-[10px] text-[#888] border border-[#ddd] px-3 py-[5px] rounded-[7px] bg-white ml-auto">Close</button>
             </>
-          )}
-
-          {result === 'idle' && (
-            <p className="text-sm text-gray-400">Make the sign shown above</p>
           )}
         </div>
       </div>
@@ -174,21 +163,10 @@ export default function LearnPage() {
   const [trySign,   setTrySign]   = useState<Sign | null>(null);
   const [tryResult, setTryResult] = useState<TryResult>('idle');
 
-  const filtered =
-    filter === 'all'
-      ? SIGNS
-      : SIGNS.filter((s) => s.category === filter);
+  const filtered = filter === 'all' ? SIGNS : SIGNS.filter((s) => s.category === filter);
 
-  const handleTryIt = (sign: Sign) => {
-    setTrySign(sign);
-    setTryResult('idle');
-  };
-
-  const handleClose = () => {
-    setTrySign(null);
-    setTryResult('idle');
-  };
-
+  const handleTryIt = (sign: Sign) => { setTrySign(sign); setTryResult('idle'); };
+  const handleClose  = () => { setTrySign(null); setTryResult('idle'); };
   const handleDetect = (label: string) => {
     if (!trySign) return;
     setTryResult(label === trySign.label ? 'success' : 'wrong');
@@ -196,40 +174,42 @@ export default function LearnPage() {
 
   return (
     <>
-      <main className="min-h-dvh bg-background pb-16">
+      <main className="min-h-dvh bg-white pb-16">
 
         {/* Header */}
-        <header className="px-4 pb-4 pt-8">
-          <h1 className="text-2xl font-bold">Learn Ghanaian Sign Language</h1>
-          <p className="mt-1 text-sm text-gray-400">
-            Tap a card to practice with your camera
-          </p>
-        </header>
+        <div className="bg-white border-b border-[#f0f0f0] px-7 pt-5">
+          <div className="flex items-end justify-between mb-4">
+            <h1 className="text-[24px] font-[900] text-ink tracking-[-0.8px]">Learn GSL</h1>
+            <span className="text-[10px] text-[#bbb] font-[600]">{SIGNS.length} signs</span>
+          </div>
 
-        {/* Filter tabs — horizontally scrollable on mobile */}
-        <nav
-          aria-label="Filter by category"
-          className="flex gap-2 overflow-x-auto px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        >
-          {TABS.map((tab) => (
-            <button
-              key={tab.value}
-              type="button"
-              onClick={() => setFilter(tab.value)}
-              aria-pressed={filter === tab.value}
-              className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
-                filter === tab.value
-                  ? 'bg-brand-500 text-white'
-                  : 'border border-gray-200 text-gray-500 hover:border-brand-500 hover:text-brand-500'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </nav>
+          {/* Filter tabs */}
+          <nav aria-label="Filter by category" className="flex overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {TABS.map((tab) => (
+              <button
+                key={tab.value}
+                type="button"
+                onClick={() => setFilter(tab.value)}
+                aria-pressed={filter === tab.value}
+                className={`px-4 py-[9px] text-[11px] font-[700] whitespace-nowrap border-b-[2.5px] transition-colors -mb-px ${
+                  filter === tab.value
+                    ? 'text-ink border-ink'
+                    : 'text-[#aaa] border-transparent hover:text-[#777]'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        {/* Blurb */}
+        <div className="bg-[#f9f9f9] border-b border-[#f0f0f0] px-7 py-3 text-[11px] text-[#999] leading-[1.6]">
+          {SIGNS.length} core GSL signs. Tap &quot;Try it&quot; to practise live with your camera.
+        </div>
 
         {/* Card grid */}
-        <div className="grid grid-cols-2 gap-4 px-4 md:grid-cols-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[10px] p-7">
           {filtered.map((sign) => (
             <LessonCard key={sign.label} sign={sign} onTryIt={handleTryIt} />
           ))}
@@ -237,7 +217,6 @@ export default function LearnPage() {
 
       </main>
 
-      {/* Try It modal — active=false when closed stops the camera */}
       {trySign && (
         <TryItModal
           sign={trySign}

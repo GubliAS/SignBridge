@@ -4,19 +4,23 @@ import { useState } from 'react';
 import type { Sign } from '@/lib/signs';
 
 export interface SignGifProps {
-  sign: Sign;
+  sign:       Sign;
   className?: string;
+  size?:      number; // px, for fixed-size usage
 }
 
-export function SignGif({ sign, className = '' }: SignGifProps) {
+export function SignGif({ sign, className = '', size }: SignGifProps) {
   const [failed, setFailed] = useState(false);
+
+  const style = size ? { width: size, height: size } : undefined;
 
   if (failed) {
     return (
       <div
-        className={`flex aspect-square items-center justify-center rounded-xl bg-gray-100 ${className}`}
+        style={style}
+        className={`flex items-center justify-center bg-[#e8e8e8] rounded-lg ${className}`}
       >
-        <span className="text-sm font-medium capitalize text-gray-400">{sign.label}</span>
+        <span className="text-[9px] font-[600] text-[#ccc] capitalize text-center px-1 leading-tight">{sign.label}</span>
       </div>
     );
   }
@@ -26,7 +30,8 @@ export function SignGif({ sign, className = '' }: SignGifProps) {
       src={sign.gifPath}
       alt={`${sign.label} sign in Ghanaian Sign Language`}
       onError={() => setFailed(true)}
-      className={`aspect-square object-contain ${className}`}
+      style={style}
+      className={`object-contain ${className}`}
     />
   );
 }

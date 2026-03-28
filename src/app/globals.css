@@ -1,30 +1,61 @@
 @import "tailwindcss";
 
+/* ─── DESIGN TOKENS ──────────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --sb-green:       #1D9E75;
+  --sb-green-light: #E1F5EE;
+  --sb-green-mid:   #9FE1CB;
+  --sb-green-dark:  #0F6E56;
+  --sb-charcoal:    #2C2C2A;
+  --sb-black:       #111111;
+  --sb-white:       #ffffff;
+  --sb-gray-100:    #F7F7F5;
+  --sb-gray-200:    #F0EFEB;
+  --sb-gray-300:    #E3E1DB;
+  --sb-gray-400:    #C8C6BF;
+  --sb-gray-500:    #9B9994;
+  --sb-gray-600:    #6B6966;
+  --sb-page-bg:     #EEECEA;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Fonts */
+  --font-sans: var(--font-dm-sans);
+  --font-mono: var(--font-dm-mono);
 
-  /* SignBridge brand colour ramp */
-  --color-brand-50:  #E1F5EE;
-  --color-brand-100: #9FE1CB;
-  --color-brand-500: #1D9E75;
-  --color-brand-600: #0F6E56;
-  --color-brand-900: #04342C;
+  /* Brand colors */
+  --color-green:       var(--sb-green);
+  --color-green-light: var(--sb-green-light);
+  --color-green-mid:   var(--sb-green-mid);
+  --color-green-dark:  var(--sb-green-dark);
+  --color-charcoal:    var(--sb-charcoal);
+  --color-ink:         var(--sb-black);
+  --color-page:        var(--sb-page-bg);
 
-  /* Result fade-in animation */
-  --animate-sign-fade-in: signFadeIn 0.35s ease-out both;
+  /* Neutral scale */
+  --color-n100: var(--sb-gray-100);
+  --color-n200: var(--sb-gray-200);
+  --color-n300: var(--sb-gray-300);
+  --color-n400: var(--sb-gray-400);
+  --color-n500: var(--sb-gray-500);
+  --color-n600: var(--sb-gray-600);
+
+  /* Border radius */
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   18px;
+  --radius-xl:   24px;
+  --radius-pill: 100px;
+
+  /* Animations */
+  --animate-sign-fade-in: signFadeIn 0.2s ease-out both;
+  --animate-pulse-dot: pulseDot 1.6s ease-in-out infinite;
 }
 
+/* ─── KEYFRAMES ──────────────────────────────────────────────────────────── */
 @keyframes signFadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0);    }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
 }
 
 @keyframes confettiBurst {
@@ -33,15 +64,17 @@
   100% { opacity: 0; transform: scale(1) translate(var(--cx), var(--cy)) rotate(360deg); }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1);   }
+  50%       { opacity: .5; transform: scale(0.8); }
 }
 
+/* ─── BASE ───────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+  background: var(--sb-page-bg);
+  color: var(--sb-black);
+  -webkit-font-smoothing: antialiased;
 }
