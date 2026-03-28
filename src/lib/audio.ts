@@ -14,9 +14,15 @@ let currentAudio: HTMLAudioElement | null = null;
  * Silently skips any sign that fails — degrades gracefully.
  */
 export async function preloadTwiAudio(): Promise<void> {
+  let loaded = 0;
+
   await Promise.all(
     SIGNS.map(async (sign) => {
-      if (twiCache.has(sign.label)) return;
+      if (twiCache.has(sign.label)) {
+        loaded++;
+        console.log(`Preloading audio: ${loaded}/${SIGNS.length}`);
+        return;
+      }
       try {
         const res = await fetch('/api/translate', {
           method: 'POST',
@@ -28,6 +34,9 @@ export async function preloadTwiAudio(): Promise<void> {
         if (data.audio) twiCache.set(sign.label, data.audio);
       } catch {
         // Network failure — skip silently
+      } finally {
+        loaded++;
+        console.log(`Preloading audio: ${loaded}/${SIGNS.length}`);
       }
     }),
   );
@@ -74,9 +83,10 @@ export function speakEnglish(text: string): void {
 
 /**
  * Handles audio output for a detected sign based on the active language.
- * Checks cache first for Twi; falls back to a live fetch if not cached.
+ * Returns void (fire-and-forget) — safe to call from event handlers.
+ * Checks Twi cache first; falls back to a live fetch if not yet cached.
  */
-export async function handleSignAudio(label: string, lang: Lang): Promise<void> {
+export function handleSignAudio(label: string, lang: Lang): void {
   if (lang === 'en') {
     speakEnglish(label);
     return;
@@ -88,19 +98,21 @@ export async function handleSignAudio(label: string, lang: Lang): Promise<void> 
     return;
   }
 
-  try {
-    const res = await fetch('/api/translate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ label, lang: 'tw' }),
+  // Cache miss — fetch live then play (should rarely happen if preload ran)
+  void fetch('/api/translate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ label, lang: 'tw' }),
+  })
+    .then(async (res) => {
+      if (!res.ok) return;
+      const data = (await res.json()) as TranslateResponseBody;
+      if (data.audio) {
+        twiCache.set(label, data.audio);
+        playAudio(data.audio);
+      }
+    })
+    .catch(() => {
+      // Network failure — silent fallback
     });
-    if (!res.ok) return;
-    const data = (await res.json()) as TranslateResponseBody;
-    if (data.audio) {
-      twiCache.set(label, data.audio);
-      playAudio(data.audio);
-    }
-  } catch {
-    // Network failure — silent fallback
-  }
 }
