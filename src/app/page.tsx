@@ -177,7 +177,7 @@ function Hero() {
       {/* Centre content */}
       <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-[600px]">
         {/* Badge */}
-        <div className="inline-flex items-center gap-[6px] bg-green-light/50 text-green-dark text-[12px] tracking-wider font-[600] px-3 py-[5px] rounded-pill mb-6 tracking-[0.04em]">
+        <div className="inline-flex items-center gap-[6px] bg-green-light/50 text-green-dark text-[10px] sm:text-[12px] tracking-wider font-semibold px-3 py-[5px] rounded-pill mb-6">
           <span className="w-[6px] h-[6px] rounded-full bg-green animate-[pulseDot_1.6s_ease-in-out_infinite]" />
           GHANAIAN SIGN LANGUAGE · ENGLISH · TWI · GA · EWE
         </div>
