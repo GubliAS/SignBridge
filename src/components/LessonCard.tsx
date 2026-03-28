@@ -34,16 +34,16 @@ export function LessonCard({ sign, onTryIt }: LessonCardProps) {
         </p>
 
         {/* All language translations */}
-        <div className="flex flex-col gap-[3px] mb-[10px]">
+        <div className="grid grid-cols-2 gap-[3px] mb-[10px]">
           {(
             [
-              { code: 'TW',  value: sign.twi },
+              { code: 'TWI',  value: sign.twi },
               { code: 'EWE', value: sign.ewe },
               { code: 'GA',  value: sign.ga  },
             ] as const
           ).map(({ code, value }) => (
-            <div key={code} className="flex items-center gap-[5px]">
-              <span className="text-[9px] font-bold text-[#d0d0d0] uppercase tracking-[0.06em] w-[24px] shrink-0">
+            <div key={code} className="flex items-center gap-2">
+              <span className="text-xs font-bold text-[#7c7777] uppercase tracking-[0.06em] w-[24px] shrink-0">
                 {code}
               </span>
               <span className="text-[11px] text-[#888] font-medium">{value}</span>
