@@ -19,21 +19,23 @@ export type SignCategory = 'greeting' | 'response' | 'action' | 'object';
 export type Sign = {
   label:    string;
   twi:      string;
+  ga:       string;
+  ewe:      string;
   imgPath:  string;
   category: SignCategory;
 };
 
 export const SIGNS: Sign[] = [
-  { label: 'hello',  twi: 'Mahɔ',   category: 'greeting', imgPath: '/signs/hello-handsign.webp'  },
-  { label: 'yes',    twi: 'Aane',   category: 'response', imgPath: '/signs/yes-handsign.webp'    },
-  { label: 'love',   twi: 'Dɔ',     category: 'response', imgPath: '/signs/love-handsign.webp'   },
-  { label: 'help',   twi: 'Boa me', category: 'action',   imgPath: '/signs/help-handsign.webp'   },
-  { label: 'stop',   twi: 'Gyae',   category: 'action',   imgPath: '/signs/stop-handsign.webp'   },
-  { label: 'good',   twi: 'Eye',    category: 'response', imgPath: '/signs/good-handsign.webp'   },
-  { label: 'bad',    twi: 'Bɔne',   category: 'response', imgPath: '/signs/bad-handsign.webp'    },
-  { label: 'water',  twi: 'Nsuo',   category: 'object',   imgPath: '/signs/water-handsign.webp'  },
-  { label: 'name',   twi: 'Din',    category: 'object',   imgPath: '/signs/name-handsign.webp'   },
-  { label: 'school', twi: 'Sukuu',  category: 'object',   imgPath: '/signs/school-handsign.webp' },
+  { label: 'hello',  twi: 'Mahɔ',   ga: 'Ojekoo',        ewe: 'Woezɔ',        category: 'greeting', imgPath: '/signs/hello-handsign.webp'  },
+  { label: 'yes',    twi: 'Aane',   ga: 'Yoo',           ewe: 'Ɛ̃',           category: 'response', imgPath: '/signs/yes-handsign.webp'    },
+  { label: 'love',   twi: 'Dɔ',     ga: 'Oyiwalɛ',       ewe: 'Lɔ̃',          category: 'response', imgPath: '/signs/love-handsign.webp'   },
+  { label: 'help',   twi: 'Boa me', ga: 'Bɔ mli',        ewe: 'Kpe ɖe ŋunye', category: 'action',   imgPath: '/signs/help-handsign.webp'   },
+  { label: 'stop',   twi: 'Gyae',   ga: 'Tɔ',            ewe: 'Tɔ',           category: 'action',   imgPath: '/signs/stop-handsign.webp'   },
+  { label: 'good',   twi: 'Eye',    ga: 'Yoo',           ewe: 'Nyui',         category: 'response', imgPath: '/signs/good-handsign.webp'   },
+  { label: 'bad',    twi: 'Bɔne',   ga: 'Gbɛi',          ewe: 'Vɔ̃',          category: 'response', imgPath: '/signs/bad-handsign.webp'    },
+  { label: 'water',  twi: 'Nsuo',   ga: 'Shikpɔŋ',       ewe: 'Tsi',          category: 'object',   imgPath: '/signs/water-handsign.webp'  },
+  { label: 'name',   twi: 'Din',    ga: 'Tɔi',           ewe: 'Ŋkɔ',          category: 'object',   imgPath: '/signs/name-handsign.webp'   },
+  { label: 'school', twi: 'Sukuu',  ga: 'Sukuulɛ',       ewe: 'Suku',         category: 'object',   imgPath: '/signs/school-handsign.webp' },
 ];
 
 export const SIGN_MAP: Record<string, Sign> = Object.fromEntries(
@@ -41,24 +43,33 @@ export const SIGN_MAP: Record<string, Sign> = Object.fromEntries(
 );
 
 /**
- * Languages that have static lookup data for text → sign resolution.
- * English matches `sign.label`; Twi matches `sign.twi`.
- * Ewe and Ga require a live API call and are not supported as input.
+ * Get the static translation for a sign in a given language.
+ * Returns undefined for English (use sign.label directly).
  */
-export const INPUT_SUPPORTED_LANGS: Lang[] = ['en', 'tw'];
+export function getStaticTranslation(sign: Sign, lang: Lang): string | undefined {
+  switch (lang) {
+    case 'tw':  return sign.twi;
+    case 'ee':  return sign.ewe;
+    case 'gaa': return sign.ga;
+    default:    return undefined;
+  }
+}
 
-/** Example words a user can type, keyed by language. */
+/** All four languages now have static lookup data. */
+export const INPUT_SUPPORTED_LANGS: Lang[] = ['en', 'tw', 'ee', 'gaa'];
+
+/** Example words a user can type, keyed by input language. */
 export const LANG_EXAMPLES: Record<Lang, string> = {
   en:  'hello · yes · help · stop · good · bad · water · name · school',
   tw:  'Mahɔ · Aane · Boa me · Gyae · Eye · Bɔne · Nsuo · Din · Sukuu',
-  ee:  '',   // not yet supported for input
-  gaa: '',   // not yet supported for input
+  ee:  'Woezɔ · Ɛ̃ · Kpe ɖe ŋunye · Tɔ · Nyui · Vɔ̃ · Tsi · Ŋkɔ · Suku',
+  gaa: 'Ojekoo · Yoo · Bɔ mli · Tɔ · Gbɛi · Shikpɔŋ · Tɔi · Sukuulɛ',
 };
 
-/** Placeholder text for the text input, keyed by language. */
+/** Placeholder text for the text input, keyed by input language. */
 export const LANG_PLACEHOLDER: Record<Lang, string> = {
   en:  'e.g. hello yes water school',
   tw:  'e.g. Mahɔ Aane Nsuo Sukuu',
-  ee:  'Ewe input not yet supported — try English or Twi',
-  gaa: 'Ga input not yet supported — try English or Twi',
+  ee:  'e.g. Woezɔ Tsi Suku',
+  gaa: 'e.g. Ojekoo Shikpɔŋ Sukuulɛ',
 };

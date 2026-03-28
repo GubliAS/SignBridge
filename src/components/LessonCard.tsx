@@ -29,8 +29,28 @@ export function LessonCard({ sign, onTryIt }: LessonCardProps) {
 
       {/* Body */}
       <div className="p-[10px]">
-        <p className="text-base font-semibold text-ink tracking-[-0.3px] mb-[1px] capitalize">{sign.label}</p>
-        <p className="text-sm text-[#aaa] font-regular mb-2">{sign.twi}</p>
+        <p className="text-base font-bold text-ink tracking-[-0.3px] mb-[6px] capitalize">
+          {sign.label}
+        </p>
+
+        {/* All language translations */}
+        <div className="flex flex-col gap-[3px] mb-[10px]">
+          {(
+            [
+              { code: 'TW',  value: sign.twi },
+              { code: 'EWE', value: sign.ewe },
+              { code: 'GA',  value: sign.ga  },
+            ] as const
+          ).map(({ code, value }) => (
+            <div key={code} className="flex items-center gap-[5px]">
+              <span className="text-[9px] font-bold text-[#d0d0d0] uppercase tracking-[0.06em] w-[24px] shrink-0">
+                {code}
+              </span>
+              <span className="text-[11px] text-[#888] font-medium">{value}</span>
+            </div>
+          ))}
+        </div>
+
         <button
           type="button"
           onClick={() => onTryIt(sign)}

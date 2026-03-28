@@ -147,7 +147,7 @@ export default function TranslatePage() {
 
   const currentLangLabel = LANGUAGES[lang].label;
 
-  /** Label for the secondary line: glossary Twi when output is English, else English gloss. */
+  /** Label for the secondary line: native gloss when output is English, else English gloss. */
   const secondaryHeading = (outLang: Lang) =>
     outLang === 'en' ? 'Twi' : 'English';
 

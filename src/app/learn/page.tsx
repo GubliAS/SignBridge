@@ -93,8 +93,10 @@ function TryItModal({
         {/* Header bar */}
         <div className="bg-ink px-[18px] py-[11px] flex items-center justify-between flex-shrink-0">
           <span className="text-[12px] font-[700] text-white">
-            Practice: <span className="capitalize">{sign.label}</span> ·{" "}
-            <span className="text-[#888]">{sign.twi}</span>
+            Practice: <span className="capitalize">{sign.label}</span>
+            <span className="text-[#666] font-normal">
+              {" "}· {sign.twi} · {sign.ewe} · {sign.ga}
+            </span>
           </span>
           <button
             type="button"
@@ -113,11 +115,26 @@ function TryItModal({
               <div className="flex-1 w-full rounded-[12px] bg-[#e8e8e8] overflow-hidden flex items-center justify-center min-h-[120px]">
                 <SignGif sign={sign} size={160} className="w-full h-full object-contain rounded-[12px]" />
               </div>
-              <div className="flex flex-col items-center gap-[4px] flex-shrink-0 pt-1">
+              <div className="flex flex-col items-center gap-[5px] flex-shrink-0 pt-1">
                 <p className="text-lg md:text-xl font-bold text-ink tracking-[-0.3px] capitalize">
                   {sign.label}
                 </p>
-                <p className="text-sm md:text-base text-[#aaa]">{sign.twi}</p>
+                <div className="flex flex-col items-center gap-[2px]">
+                  {(
+                    [
+                      { code: 'TW',  value: sign.twi },
+                      { code: 'EWE', value: sign.ewe },
+                      { code: 'GA',  value: sign.ga  },
+                    ] as const
+                  ).map(({ code, value }) => (
+                    <div key={code} className="flex items-center gap-[4px]">
+                      <span className="text-[8px] font-bold text-[#ccc] uppercase tracking-[0.06em] w-[20px] text-right shrink-0">
+                        {code}
+                      </span>
+                      <span className="text-[11px] text-[#aaa] font-medium">{value}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 

@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
-  INPUT_SUPPORTED_LANGS,
+  getStaticTranslation,
   LANG_EXAMPLES,
   LANG_PLACEHOLDER,
   LANGUAGES,
@@ -11,7 +11,6 @@ import {
   type Lang,
   type Sign,
 } from '@/lib/signs';
-import type { TranslateResponseBody } from '@/app/api/translate/route';
 import { SignGif } from '@/components/SignGif';
 import { LangDropdown } from '@/components/LangDropdown';
 import { PageHeader } from '@/components/PageHeader';
@@ -19,66 +18,55 @@ import { PageHeader } from '@/components/PageHeader';
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 /**
- * Resolve a typed word to a Sign.
- * English  → exact match on sign.label
- * Twi      → exact match on sign.twi
- * Ewe/Ga   → not supported statically; always returns null (placeholder shown)
+ * Resolve a typed word to a Sign using static translation data.
+ *  en  → match sign.label (English)
+ *  tw  → match sign.twi   (Twi)
+ *  ee  → match sign.ewe   (Ewe)
+ *  gaa → match sign.ga    (Ga)
  */
 function resolveWord(word: string, lang: Lang): Sign | null {
   const lower = word.toLowerCase();
-  if (lang === 'en') return SIGN_MAP[lower] ?? null;
-  if (lang === 'tw') return SIGNS.find((s) => s.twi.toLowerCase() === lower) ?? null;
-  return null; // Ewe / Ga have no static translation table
+  switch (lang) {
+    case 'en':
+      return SIGN_MAP[lower] ?? null;
+    case 'tw':
+      return SIGNS.find((s) => s.twi.toLowerCase() === lower) ?? null;
+    case 'ee':
+      return SIGNS.find((s) => s.ewe.toLowerCase() === lower) ?? null;
+    case 'gaa':
+      return SIGNS.find((s) => s.ga.toLowerCase() === lower) ?? null;
+  }
 }
 
-const inputSupported = (lang: Lang) => INPUT_SUPPORTED_LANGS.includes(lang);
+/** Pick the right label to show as the primary text on a result card. */
+function getPrimaryLabel(sign: Sign, lang: Lang): string {
+  if (lang === 'en') return sign.label;
+  return getStaticTranslation(sign, lang) ?? sign.label;
+}
+
+/** Pick the secondary gloss shown below the primary label. */
+function getSecondaryLabel(sign: Sign, displayLang: Lang, inputLang: Lang): string {
+  // Show the input language word as gloss when display differs from input
+  if (displayLang !== inputLang) {
+    return getPrimaryLabel(sign, inputLang);
+  }
+  // Same lang — show English as the universal gloss
+  return sign.label;
+}
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-/**
- * A single result card for one word.
- * Shows the sign GIF + primary label (in output lang) + secondary gloss.
- * Falls back to a placeholder dashed card when no sign was found.
- */
 function SignWordCard({
   word,
   sign,
-  lang,
+  inputLang,
+  displayLang,
 }: {
-  word: string;
-  sign: Sign | null;
-  lang: Lang;
+  word:        string;
+  sign:        Sign | null;
+  inputLang:   Lang;
+  displayLang: Lang;
 }) {
-  const [remoteText, setRemoteText] = useState<string | null>(null);
-  const [remoteLoading, setRemoteLoading] = useState(false);
-
-  // Fetch translated label for Ewe / Ga output
-  useEffect(() => {
-    if (!sign || lang === 'en' || lang === 'tw') {
-      setRemoteText(null);
-      setRemoteLoading(false);
-      return;
-    }
-    let cancelled = false;
-    setRemoteLoading(true);
-    fetch('/api/translate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ label: sign.label, lang }),
-    })
-      .then((res) => (res.ok ? res.json() : Promise.reject(new Error('translate'))))
-      .then((data: TranslateResponseBody) => {
-        if (!cancelled) setRemoteText(data.displayText);
-      })
-      .catch(() => {
-        if (!cancelled) setRemoteText(null);
-      })
-      .finally(() => {
-        if (!cancelled) setRemoteLoading(false);
-      });
-    return () => { cancelled = true; };
-  }, [sign, lang]);
-
   if (!sign) {
     return (
       <div className="rounded-[14px] border-[1.5px] border-dashed border-[#e0e0e0] p-[14px] text-center bg-[#fafafa] min-w-[82px] opacity-70">
@@ -94,20 +82,8 @@ function SignWordCard({
     );
   }
 
-  // Determine what label to show as primary / secondary
-  let primary: string;
-  let secondary: string;
-  if (lang === 'en') {
-    primary = sign.label;
-    secondary = sign.twi;
-  } else if (lang === 'tw') {
-    primary = sign.twi;
-    secondary = sign.label;
-  } else {
-    // Ewe / Ga — use fetched text while loading, fall back to Twi
-    primary = remoteLoading && !remoteText ? '…' : (remoteText ?? sign.twi);
-    secondary = sign.label;
-  }
+  const primary   = getPrimaryLabel(sign, displayLang);
+  const secondary = getSecondaryLabel(sign, displayLang, inputLang);
 
   return (
     <div className="rounded-[14px] border border-[#f0f0f0] p-[14px] text-center bg-white min-w-[82px]">
@@ -122,26 +98,6 @@ function SignWordCard({
   );
 }
 
-/** Inline banner shown when the selected language has no static lookup support. */
-function UnsupportedInputNotice({ lang }: { lang: Lang }) {
-  return (
-    <div
-      role="note"
-      className="flex items-start gap-[7px] rounded-md bg-[#fff8e6] border border-[#ffe09a] px-4 py-[10px] text-[11px] text-[#8a6000]"
-    >
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="shrink-0 mt-[1px]">
-        <circle cx="7" cy="7" r="6" stroke="#c98a00" strokeWidth="1.2" />
-        <path d="M7 4v3.5M7 9.5h.01" stroke="#c98a00" strokeWidth="1.3" strokeLinecap="round" />
-      </svg>
-      <span>
-        <strong>{LANGUAGES[lang].label} text input isn&apos;t supported yet.</strong>{' '}
-        Try typing in <strong>English</strong> or <strong>Twi</strong> — the GIF will still display in your chosen language.
-      </span>
-    </div>
-  );
-}
-
-/** Empty / idle state shown before a search is submitted. */
 function EmptyState() {
   return (
     <div className="flex flex-col items-center py-10 text-center">
@@ -160,35 +116,34 @@ function EmptyState() {
 // ─── Page ────────────────────────────────────────────────────────────────────
 
 export default function SpeakPage() {
-  const [lang, setLang] = useState<Lang>('en');
-  const [inputText, setInputText] = useState('');
-  const [words, setWords] = useState<string[]>([]);
-  const [submitted, setSubmitted] = useState(false);
+  const [inputLang,   setInputLang]   = useState<Lang>('en');
+  const [displayLang, setDisplayLang] = useState<Lang>('en');
+  const [inputText,   setInputText]   = useState('');
+  const [words,       setWords]       = useState<string[]>([]);
+  const [submitted,   setSubmitted]   = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputSupported(lang)) return; // Prevent submit when input not supported
     const parsed = inputText.trim().split(/\s+/).filter(Boolean);
     setWords(parsed);
     setSubmitted(parsed.length > 0);
   };
 
-  const handleLangChange = (next: Lang) => {
-    setLang(next);
-    // Clear results when switching language — avoids stale resolutions
+  // Changing input language resets results to avoid stale matches
+  const handleInputLangChange = (next: Lang) => {
+    setInputLang(next);
     setSubmitted(false);
     setWords([]);
     setInputText('');
   };
 
   const resolvedWords = useMemo(
-    () => words.map((word) => ({ word, sign: resolveWord(word, lang) })),
-    [words, lang],
+    () => words.map((word) => ({ word, sign: resolveWord(word, inputLang) })),
+    [words, inputLang],
   );
 
-  const isInputSupported = inputSupported(lang);
-  const placeholder = LANG_PLACEHOLDER[lang];
-  const examples = LANG_EXAMPLES[lang];
+  const examples    = LANG_EXAMPLES[inputLang];
+  const placeholder = LANG_PLACEHOLDER[inputLang];
 
   return (
     <main className="min-h-dvh bg-white">
@@ -197,26 +152,35 @@ export default function SpeakPage() {
           mode="Mode"
           title="Text → Sign"
           description="Type a word or phrase to see the corresponding Ghanaian Sign Language GIFs"
-          action={
-            <>
-              <span className="text-xs md:text-sm text-[#888] font-medium">
-                I&apos;m typing in:
-              </span>
-              <LangDropdown
-                value={lang}
-                onChange={handleLangChange}
-                ariaLabel="Input language"
-              />
-            </>
-          }
         />
 
-        {/* ── Input zone ── */}
-        <section className="bg-[#fafafa] border-b border-[#f0f0f0] px-7 py-6 mt-5 rounded-md space-y-3">
-          {/* Unsupported input warning */}
-          {!isInputSupported && <UnsupportedInputNotice lang={lang} />}
+        {/* ── Controls row ── */}
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 bg-[#fafafa] border border-[#f0f0f0] rounded-[10px] px-5 py-4 mt-5">
+          {/* Input language */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-[#888]">I&apos;m typing in:</span>
+            <LangDropdown
+              value={inputLang}
+              onChange={handleInputLangChange}
+              ariaLabel="Input language"
+            />
+          </div>
 
-          {/* Input + submit */}
+          <span className="hidden sm:block w-px h-5 bg-[#e8e8e8]" aria-hidden="true" />
+
+          {/* Display / output language */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-[#888]">Display in:</span>
+            <LangDropdown
+              value={displayLang}
+              onChange={setDisplayLang}
+              ariaLabel="Display language"
+            />
+          </div>
+        </div>
+
+        {/* ── Input zone ── */}
+        <section className="mt-3">
           <form onSubmit={handleSubmit} className="flex gap-2">
             <label htmlFor="sign-input" className="sr-only">
               Enter text to convert to signs
@@ -227,14 +191,13 @@ export default function SpeakPage() {
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder={placeholder}
-              disabled={!isInputSupported}
-              className="flex-1 border-[1.5px] border-[#e0e0e0] rounded-[10px] px-4 py-3 text-[14px] bg-white text-ink placeholder:text-[#ccc] outline-none focus:border-green transition-colors min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 border-[1.5px] border-[#e0e0e0] rounded-[10px] px-4 py-3 text-[14px] bg-white text-ink placeholder:text-[#ccc] outline-none focus:border-green transition-colors min-h-[44px]"
               autoComplete="off"
               spellCheck={false}
             />
             <button
               type="submit"
-              disabled={!inputText.trim() || !isInputSupported}
+              disabled={!inputText.trim()}
               aria-label="Show signs"
               className="bg-ink text-white px-5 py-3 rounded-full text-sm font-medium transition-colors hover:bg-[#222] disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-[5px] min-h-[44px]"
             >
@@ -247,7 +210,7 @@ export default function SpeakPage() {
         </section>
 
         {/* ── Vocabulary hint ── */}
-        {isInputSupported && examples && (
+        {examples && (
           <div className="mt-3 rounded-md bg-[#fffbcc]/50 border border-[#ffe566]/50 px-4 py-[11px] text-[11px] text-[#776600] flex items-start gap-[7px]">
             <span className="font-bold text-[#554400] whitespace-nowrap">
               Supported signs:
@@ -257,23 +220,30 @@ export default function SpeakPage() {
         )}
 
         {/* ── Output area ── */}
-        <section className="px-7 py-6">
+        <section className="py-6">
           {submitted && words.length > 0 ? (
             <>
               <div className="text-xs md:text-sm font-semibold text-[#bbb] uppercase tracking-[0.08em] mb-[14px]">
                 Signs for &lsquo;{inputText.trim()}&rsquo;
-                <span className="ml-2 normal-case font-normal text-[#ccc]">
-                  — displayed in {LANGUAGES[lang].label}
-                </span>
+                {displayLang !== inputLang && (
+                  <span className="ml-2 normal-case font-normal text-[#ccc]">
+                    — displayed in {LANGUAGES[displayLang].label}
+                  </span>
+                )}
               </div>
               <div
-                className="flex gap-[10px] flex-wrap overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                className="flex gap-[10px] flex-wrap"
                 role="list"
                 aria-label="Sign results"
               >
                 {resolvedWords.map(({ word, sign }, i) => (
                   <div key={`${word}-${i}`} role="listitem">
-                    <SignWordCard word={word} sign={sign} lang={lang} />
+                    <SignWordCard
+                      word={word}
+                      sign={sign}
+                      inputLang={inputLang}
+                      displayLang={displayLang}
+                    />
                   </div>
                 ))}
               </div>

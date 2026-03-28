@@ -8,7 +8,9 @@
       "WebFetch(domain:lughayangu.com)",
       "WebFetch(domain:en.wikivoyage.org)",
       "WebFetch(domain:www.osofo.net)",
-      "WebFetch(domain:pages.mtu.edu)"
+      "WebFetch(domain:pages.mtu.edu)",
+      "WebFetch(domain:wol.jw.org)",
+      "WebFetch(domain:mightyafrican.blogspot.com)"
     ]
   }
 }
