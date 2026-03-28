@@ -1,26 +1,118 @@
-export interface Landmark {
-  x: number;
-  y: number;
-  z: number;
-}
+// Pure TypeScript — no imports, no browser APIs.
+// Safe to import in both client and server contexts.
 
-/**
- * Classifies a hand pose from 21 MediaPipe landmarks.
- * Returns a sign label (matching SIGNS[].label) or null if no sign matches.
- *
- * Landmark indices used:
- *  4  = thumb tip    |  3  = thumb IP
- *  8  = index tip    |  6  = index PIP
- *  12 = middle tip   | 10  = middle PIP
- *  16 = ring tip     | 14  = ring PIP
- *  20 = pinky tip    | 18  = pinky PIP
- *
- * Extended finger: tip.y < pip.y  (tip is higher on screen)
- * Curled finger:   tip.y > pip.y
- */
-export function classifySign(landmarks: Landmark[]): string | null {
-  if (landmarks.length !== 21) return null;
+export type Landmark = { x: number; y: number; z: number };
 
-  // Stub — full rules implemented in a later step.
+export type ClassifyResult = { sign: string; confidence: number } | null;
+
+// ─── Finger helpers ───────────────────────────────────────────────────────────
+// y increases DOWNWARD in normalised MediaPipe coords.
+// tip.y < pip.y  →  tip is HIGHER on screen  →  finger is extended
+// tip.y > pip.y  →  tip is LOWER  on screen  →  finger is curled
+
+const ext  = (tip: Landmark, pip: Landmark): boolean => tip.y < pip.y;
+const curl = (tip: Landmark, pip: Landmark): boolean => tip.y > pip.y;
+
+// ─── Rule table ───────────────────────────────────────────────────────────────
+// Each rule receives the full 21-landmark array and returns true/false.
+// Rules are checked in order; first match wins.
+
+type Rule = (lm: Landmark[]) => boolean;
+
+const RULES: [string, Rule][] = [
+  // hello — open palm: all four fingers extended
+  ['hello', (lm) =>
+    ext(lm[8],  lm[6])  &&
+    ext(lm[12], lm[10]) &&
+    ext(lm[16], lm[14]) &&
+    ext(lm[20], lm[18])
+  ],
+
+  // yes — thumbs up: thumb pointing up, all four fingers curled
+  ['yes', (lm) =>
+    lm[4].y < lm[3].y   &&
+    curl(lm[8],  lm[6])  &&
+    curl(lm[12], lm[10]) &&
+    curl(lm[16], lm[14]) &&
+    curl(lm[20], lm[18])
+  ],
+
+  // bad — fist with thumb clearly pointing DOWN (checked before 'no' to avoid
+  // partial overlap: bad requires thumb tip well below the thumb base lm[2])
+  ['bad', (lm) =>
+    lm[4].y > lm[3].y   &&
+    lm[4].y > lm[2].y   && // thumb tip clearly below thumb base — key differentiator
+    curl(lm[8],  lm[6])  &&
+    curl(lm[12], lm[10]) &&
+    curl(lm[16], lm[14]) &&
+    curl(lm[20], lm[18])
+  ],
+
+  // no — thumb down, four fingers curled (less strict than 'bad')
+  ['no', (lm) =>
+    lm[4].y > lm[3].y   &&
+    curl(lm[8],  lm[6])  &&
+    curl(lm[12], lm[10]) &&
+    curl(lm[16], lm[14])
+  ],
+
+  // stop — all fingers curled AND thumb tucked inward (lm[4].x > lm[3].x)
+  ['stop', (lm) =>
+    curl(lm[8],  lm[6])  &&
+    curl(lm[12], lm[10]) &&
+    curl(lm[16], lm[14]) &&
+    curl(lm[20], lm[18]) &&
+    lm[4].x > lm[3].x   // thumb tucked across palm
+  ],
+
+  // help — only index finger extended, all others curled
+  ['help', (lm) =>
+    ext(lm[8],   lm[6])  &&
+    curl(lm[12], lm[10]) &&
+    curl(lm[16], lm[14]) &&
+    curl(lm[20], lm[18])
+  ],
+
+  // water — index + middle + ring extended, pinky curled (W-shape)
+  ['water', (lm) =>
+    ext(lm[8],   lm[6])  &&
+    ext(lm[12],  lm[10]) &&
+    ext(lm[16],  lm[14]) &&
+    curl(lm[20], lm[18])
+  ],
+
+  // good — index + middle extended, ring + pinky curled (peace / scissors)
+  ['good', (lm) =>
+    ext(lm[8],   lm[6])  &&
+    ext(lm[12],  lm[10]) &&
+    curl(lm[16], lm[14]) &&
+    curl(lm[20], lm[18])
+  ],
+
+  // name — only pinky extended, all others curled
+  ['name', (lm) =>
+    curl(lm[8],  lm[6])  &&
+    curl(lm[12], lm[10]) &&
+    curl(lm[16], lm[14]) &&
+    ext(lm[20],  lm[18])
+  ],
+
+  // school — L-shape: thumb up + index extended, middle curled (key differentiator)
+  ['school', (lm) =>
+    lm[4].y < lm[3].y   &&
+    ext(lm[8],   lm[6])  &&
+    curl(lm[12], lm[10])
+  ],
+];
+
+// ─── Classifier ───────────────────────────────────────────────────────────────
+
+export function classifySign(lm: Landmark[]): ClassifyResult {
+  if (!lm || lm.length < 21) return null;
+
+  for (const [sign, rule] of RULES) {
+    if (rule(lm)) return { sign, confidence: 1 };
+  }
+
   return null;
 }

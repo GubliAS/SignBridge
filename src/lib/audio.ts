@@ -52,7 +52,7 @@ export function playAudio(base64: string): void {
   }
   const binary = atob(base64);
   const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
-  const blob = new Blob([bytes], { type: 'audio/mpeg' });
+  const blob = new Blob([bytes], { type: 'audio/wav' });
   const audio = new Audio(URL.createObjectURL(blob));
   currentAudio = audio;
   audio.play().catch(() => {
