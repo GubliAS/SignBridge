@@ -10,6 +10,13 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* SignBridge brand colour ramp */
+  --color-brand-50:  #E1F5EE;
+  --color-brand-100: #9FE1CB;
+  --color-brand-500: #1D9E75;
+  --color-brand-600: #0F6E56;
+  --color-brand-900: #04342C;
 }
 
 @media (prefers-color-scheme: dark) {
