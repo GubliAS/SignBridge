@@ -199,7 +199,7 @@ export default function SpeakPage() {
               type="submit"
               disabled={!inputText.trim()}
               aria-label="Show signs"
-              className="bg-ink text-white px-5 py-3 rounded-full text-sm font-medium transition-colors hover:bg-[#222] disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-[5px] min-h-[44px]"
+              className="bg-ink text-white px-5 py-3 rounded-full text-xs md:text-sm font-medium transition-colors hover:bg-[#222] disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-[5px] min-h-[44px]"
             >
               Show signs
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
