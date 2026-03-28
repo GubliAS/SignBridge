@@ -29,12 +29,13 @@ export function Footer() {
             href="/"
             className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green rounded"
           >
+            
             <Image
               src="/logo.png"
               alt="SignBridge"
-              width={140}
-              height={40}
-              className="w-30 h-10 md:h-15 md:w-40 object-cover object-center"
+              width={10000}
+              height={10000}
+              className="w-30 h-10 md:h-15 md:w-40 object-contain object-center"
               priority
             />
           </Link>
