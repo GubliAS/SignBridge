@@ -8,14 +8,13 @@ import {
   playAudio,
   preloadAudio,
   speakEnglish,
-<<<<<<< HEAD
 } from '@/lib/audio';
 import { LANGUAGES, SIGN_MAP, SIGNS, type Lang } from '@/lib/signs';
 import type { TranslateResponseBody } from '@/app/api/translate/route';
 
 // ssr:false is belt-and-suspenders alongside 'use client' + lazy MediaPipe import
 const HandCamera = dynamic(
-  () => import("@/components/HandCamera").then((m) => m.HandCamera),
+  () => import('@/components/HandCamera').then((m) => m.HandCamera),
   { ssr: false },
 );
 
