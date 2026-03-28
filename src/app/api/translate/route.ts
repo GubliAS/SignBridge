@@ -30,6 +30,68 @@ export interface TranslateResponseBody {
   lang:        Lang;
 }
 
+/** Ordered keys: primary first, then fallback (deduped if both set to the same value). */
+function ghanaNlpApiKeys(): string[] {
+  const primary = process.env.GHANANLP_API_KEY?.trim();
+  const fallback = process.env.GHANANLP_API_KEY_FALLBACK?.trim();
+  const out: string[] = [];
+  for (const k of [primary, fallback]) {
+    if (k && !out.includes(k)) out.push(k);
+  }
+  return out;
+}
+
+async function translateAndTts(
+  label: string,
+  lang: Exclude<Lang, 'en'>,
+  apiKey: string,
+): Promise<{ ok: true; body: TranslateResponseBody } | { ok: false; detail: string }> {
+  const langMeta = LANGUAGES[lang];
+  const headers = ghanaNlpHeaders(apiKey);
+
+  // Step 1: Translate English label → target language text
+  const translateRes = await fetch(`${BASE}/v1/translate`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ in: label, lang: langMeta.translateTo }),
+  });
+
+  if (!translateRes.ok) {
+    return {
+      ok: false,
+      detail: `Translate failed: ${translateRes.status}`,
+    };
+  }
+
+  const translatedText = (await translateRes.json()) as string;
+
+  // Step 2: Convert translated text → audio binary
+  const ttsRes = await fetch(`${BASE}/tts/v1/tts`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ text: translatedText, language: langMeta.ttsCode }),
+  });
+
+  if (!ttsRes.ok) {
+    return {
+      ok: false,
+      detail: `TTS failed: ${ttsRes.status}`,
+    };
+  }
+
+  const audioBuffer = await ttsRes.arrayBuffer();
+  const audioBase64 = Buffer.from(audioBuffer).toString('base64');
+
+  return {
+    ok: true,
+    body: {
+      displayText: translatedText,
+      audio: audioBase64,
+      lang,
+    },
+  };
+}
+
 export async function POST(request: NextRequest): Promise<Response> {
   const { label, lang } = (await request.json()) as TranslateRequestBody;
 
@@ -43,48 +105,30 @@ export async function POST(request: NextRequest): Promise<Response> {
     return Response.json(body);
   }
 
-  const apiKey = process.env.GHANANLP_API_KEY;
-  if (!apiKey) {
+  const keys = ghanaNlpApiKeys();
+  if (keys.length === 0) {
     return Response.json({ error: 'API key not configured' }, { status: 500 });
   }
 
-  const langMeta = LANGUAGES[lang];
-  const headers  = ghanaNlpHeaders(apiKey);
-
   try {
-    // Step 1: Translate English label → target language text
-    const translateRes = await fetch(`${BASE}/v1/translate`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ in: label, lang: langMeta.translateTo }),
-    });
+    let lastDetail = 'Translation failed';
 
-    if (!translateRes.ok) {
-      throw new Error(`Translate failed: ${translateRes.status}`);
+    for (let i = 0; i < keys.length; i++) {
+      const apiKey = keys[i];
+      const result = await translateAndTts(label, lang, apiKey);
+
+      if (result.ok) {
+        return Response.json(result.body);
+      }
+
+      lastDetail = result.detail;
+      if (i < keys.length - 1) {
+        console.warn('[/api/translate] Key failed (%s), trying fallback', result.detail);
+      }
     }
 
-    const translatedText = (await translateRes.json()) as string;
-
-    // Step 2: Convert translated text → audio binary
-    const ttsRes = await fetch(`${BASE}/tts/v1/tts`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ text: translatedText, language: langMeta.ttsCode }),
-    });
-
-    if (!ttsRes.ok) {
-      throw new Error(`TTS failed: ${ttsRes.status}`);
-    }
-
-    const audioBuffer = await ttsRes.arrayBuffer();
-    const audioBase64 = Buffer.from(audioBuffer).toString('base64');
-
-    const body: TranslateResponseBody = {
-      displayText: translatedText,
-      audio:       audioBase64,
-      lang,
-    };
-    return Response.json(body);
+    console.error('[/api/translate]', lastDetail);
+    return Response.json({ error: lastDetail }, { status: 500 });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Translation failed';
     console.error('[/api/translate]', message);
