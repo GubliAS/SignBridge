@@ -35,7 +35,7 @@ export const SIGNS: Sign[] = [
   { label: 'bad',    twi: 'Bɔne',   ga: 'Gbɛi',          ewe: 'Vɔ̃',          category: 'response', imgPath: '/signs/bad-handsign.webp'    },
   { label: 'water',  twi: 'Nsuo',   ga: 'Shikpɔŋ',       ewe: 'Tsi',          category: 'object',   imgPath: '/signs/water-handsign.webp'  },
   { label: 'name',   twi: 'Din',    ga: 'Tɔi',           ewe: 'Ŋkɔ',          category: 'object',   imgPath: '/signs/name-handsign.webp'   },
-  { label: 'school', twi: 'Sukuu',  ga: 'Sukuulɛ',       ewe: 'Suku',         category: 'object',   imgPath: '/signs/school-handsign.webp' },
+  { label: 'school', twi: 'Sukuu',  ga: 'Sukuulɛ',       ewe: 'Suku',         category: 'object',   imgPath: '/signs/school-handsign.png' },
 ];
 
 export const SIGN_MAP: Record<string, Sign> = Object.fromEntries(
